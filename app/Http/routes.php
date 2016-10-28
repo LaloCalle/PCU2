@@ -13,6 +13,9 @@
 
 Route::resource('/','IndexController');
 
+// Listas dinámicas
+Route::get('cities/{code}','DynamicListsController@cities');
+
 // Ejecución de extract y match
 Route::get('/match', function () {
     return view('match/extract-match');

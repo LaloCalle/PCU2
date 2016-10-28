@@ -124,7 +124,37 @@ class MatchFunctionModel extends Model
 	        $master = MasterModel::where('id',$branch->id_master)->first();
 
 	        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
-	        $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($master->social_reason)), 0, 5);
+            $social_reason_tokens = explode(' ',$master->social_reason);
+            $count = count($social_reason_tokens);
+            $code_name = "";
+            if($count == 1){
+                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
+            }else if($count == 2){
+                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+            }else if($count == 3){
+                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+            }else if($count == 4){
+                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+            }else if($count >= 5){
+                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
+            }
+
+            if(strlen($code_name) < 5){
+                $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+                $code_name .= $aleatory_string;
+
+                $code_name = substr($code_name, 0, 5);
+            }
 
 	        // Obtengo las 2 letras del país
 	        $code_country = $branch->country;

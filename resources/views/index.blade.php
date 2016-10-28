@@ -87,7 +87,7 @@
 					        		<td class="text-center">{!! $master->rfc !!}</td>
 					        		<td class="text-center">{!! $master->branch_description !!}</td>
 					        		<td class="text-center" style="min-width: 250px;">
-					        			{!!link_to_route('master-record.show', $title = "Detalles", $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
+					        			{!!link_to_route('master-record.show', $title = "Ver", $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
 					        			{!! link_to('/', $title = 'Documentar', $parameters = ['class'=>'btn btn-primary'], $attributes = []) !!}
 					        		</td>
 					        	</tr>
