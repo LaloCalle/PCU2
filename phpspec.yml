@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: PCU
+        psr4_prefix: PCU
+        src_path: app
