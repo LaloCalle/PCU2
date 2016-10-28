@@ -21,7 +21,7 @@ class MatchFunctionModel extends Model
 				);
 			// Hago el registro de su información como sucursal en la tabla de sucursales y obtengo el id con el que queda registrado.
 			$last_id_branch = DB::table('branch_tb')->insertGetId(
-				    ['id_master' => $last_id_master, 'code' => '', 'description' => '', 'country' => $register->country, 'state' => $register->state, 'city' => $register->city, 'street' => $register->street, 'no_int' => $register->no_int, 'no_ext' => $register->no_ext, 'colony' => $register->colony, 'postal_code' => $register->postal_code, 'status_match' => 'match', 'id_unique_customer' => '']
+				    ['id_master' => $last_id_master, 'code' => '', 'branch_description' => '', 'country' => $register->country, 'state' => $register->state, 'city' => $register->city, 'street' => $register->street, 'no_int' => $register->no_int, 'no_ext' => $register->no_ext, 'colony' => $register->colony, 'postal_code' => $register->postal_code, 'status_match' => 'match', 'id_unique_customer' => '']
 				);
 			// Hago el registro de los contactos de la sucursal registrada en la tabla de Contactos
 			if($register->telephone != "" || $register->telephone != null){
@@ -110,6 +110,37 @@ class MatchFunctionModel extends Model
 					$valorprueba = $valorprueba.$result[1]." | ";
 				}
 			}
+
+			// Aquí debe ir una función para crear el id de cliente único.
+			/*
+			 * El id se forma de 13 caracteres:
+			 * 5 letras del nombre del cliente.
+			 * 2 letras del código del país.
+			 * 3 letras del código de ciudad.
+			 * 3 letras del código de sucursal.
+			*/
+
+	        $branch = BranchModel::where('id',$last_id_branch)->first();
+	        $master = MasterModel::where('id',$branch->id_master)->first();
+
+	        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
+	        $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($master->social_reason)), 0, 5);
+
+	        // Obtengo las 2 letras del país
+	        $code_country = $branch->country;
+
+	        // Obtengo las 3 letras de la ciudad
+	        $code_city = $branch->city;
+
+	        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
+
+	        //Genero el id de cliente único
+	        $id_unique_customer = $code_name.$code_country.$code_city;
+	        $id_unique_customer = strtoupper($id_unique_customer);
+
+	        // Se agrega el id de cliente único a la base.
+	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);
+
 			return $indice." - ".$valorprueba;
 		}
 	}

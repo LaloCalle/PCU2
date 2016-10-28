@@ -16,9 +16,9 @@ class CreateBranchModelsTable extends Migration
             $table->increments('id');
             $table->integer('id_master')->unsigned();
             $table->string('code');
-            $table->string('description');
-            $table->integer('country');
-            $table->integer('state');
+            $table->string('branch_description');
+            $table->string('country');
+            $table->string('state');
             $table->string('city');
             $table->string('street');
             $table->string('no_int');

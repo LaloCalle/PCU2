@@ -23003,7 +23003,7 @@ class CityCatalogueSeeder extends Seeder
 		]);
 		DB::table('city_catalogue_tb')->insert([
 			'code' => 'VER',
-			'name' => 'VERA CRUZ',
+			'name' => 'VERACRUZ',
 			'country_code' => 'MX',
 		]);
 		DB::table('city_catalogue_tb')->insert([

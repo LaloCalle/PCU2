@@ -8,45 +8,20 @@ use PCU\Http\Requests;
 use PCU\Http\Controllers\Controller;
 use PCU\MasterModel;
 use PCU\BranchModel;
-use Illuminate\Support\Facades\DB;
-use Response;
-use Session;
+use PCU\ContactModel;
+use PCU\CountryCatalogueModel;
+use PCU\CityCatalogueModel;
 
-class IndexController extends Controller
+class MasterRecordController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $masters = BranchModel::select('branch_tb.id_unique_customer','branch_tb.id','master_tb.social_reason','master_tb.rfc','branch_tb.branch_description')
-        ->name($request->get('name'))
-        ->rfc($request->get('rfc'))
-        ->contact($request->get('contact'))
-        ->country($request->get('country'))
-        ->city($request->get('city'))
-        ->state($request->get('state'))
-        ->postalcode($request->get('postalcode'))
-        ->colony($request->get('colony'))
-        ->street($request->get('street'))
-        ->noext($request->get('noext'))
-        ->noint($request->get('noint'))
-        ->whereExists(function ($query) {
-            $query->select(DB::raw(1))
-                  ->from('match_tb')
-                  ->whereRaw('match_tb.id_master = master_tb.id');
-        })
-        ->orderby('master_tb.social_reason')
-        ->groupBy('branch_tb.id')
-        ->paginate(25);
-
-        $view = view('index',compact('masters'));
-        if($request->ajax()){
-            $sections = $view->renderSections();
-            return Response::json($sections['table-result']);
-        }else return $view;
+        //
     }
 
     /**
@@ -78,7 +53,34 @@ class IndexController extends Controller
      */
     public function show($id)
     {
-        //
+        $contacts = ContactModel::where('id_branch',$id)->get();
+        $branch = BranchModel::where('id',$id)->first();
+        $master = MasterModel::where('id',$branch->id_master)->first();
+
+        foreach($contacts as $contact){
+            if($contact->type == "email"){
+                $contact->type = "E-mail";
+            }else if($contact->type == "phone"){
+                $contact->type = "Teléfono";
+            }else if($contact->type == "mobile"){
+                $contact->type = "Móvil";
+            }else if($contact->type == "other"){
+                $contact->type = "Otro";
+            }
+        }
+
+        $country_name_count = CountryCatalogueModel::where('code',$branch->country)->count();
+        if($country_name_count > 0){
+            $country_name = CountryCatalogueModel::where('code',$branch->country)->first();
+            $branch->country = $country_name->name;
+        }
+        $city_name_count = CityCatalogueModel::where('code',$branch->city)->count();
+        if($city_name_count > 0){
+            $city_name = CityCatalogueModel::where('code',$branch->city)->first();
+            $branch->city = $city_name->name;
+        }
+
+        return view('master-record.view',compact('master','branch','contacts'));
     }
 
     /**

@@ -11,12 +11,6 @@
 |
 */
 
-/*
-Route::get('/', function () {
-    return view('index');
-});
-*/
-
 Route::resource('/','IndexController');
 
 // Ejecución de extract y match
@@ -25,3 +19,5 @@ Route::get('/match', function () {
 });
 Route::get('extract-process','ExtractMatchController@import');
 Route::post('match-process','ExtractMatchController@match');
+
+Route::resource('master-record','MasterRecordController');

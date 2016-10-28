@@ -13,10 +13,31 @@ $(function() {
     $( "#search-rfc" ).keyup(function() {
     	searchFilter();
 	});
-    $( "#search-address" ).keyup(function() {
+    $( "#search-contact" ).keyup(function() {
         searchFilter();
     });
-    $( "#search-contact" ).keyup(function() {
+    $( "#search-country" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-city" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-state" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-postal-code" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-colony" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-street" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-no-ext" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-no-int" ).keyup(function() {
         searchFilter();
     });
 });
@@ -24,9 +45,17 @@ $(function() {
 function searchFilter(){
 	var name = $( "#search-name" ).val();
 	var rfc = $( "#search-rfc" ).val();
-    var address = $( "#search-address" ).val();
     var contact = $( "#search-contact" ).val();
-    var route = direction+'/?name='+name+'&rfc='+rfc+'&address='+address+'&contact='+contact;
+    var country = $( "#search-country" ).val();
+    var city = $( "#search-city" ).val();
+    var state = $( "#search-state" ).val();
+    var postalcode = $( "#search-postal-code" ).val();
+    var colony = $( "#search-colony" ).val();
+    var street = $( "#search-street" ).val();
+    var noext = $( "#search-no-ext" ).val();
+    var noint = $( "#search-no-int" ).val();
+
+    var route = direction+'/?name='+name+'&rfc='+rfc+'&contact='+contact+'&country='+country+'&city='+city+'&state='+state+'&postalcode='+postalcode+'&colony='+colony+'&street='+street+'&noext='+noext+'&noint='+noint;
     $.ajax({
         type: 'GET',
         url: route,
