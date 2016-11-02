@@ -2,7 +2,7 @@
 
 namespace PCU\Http\Controllers;
 
-ini_set('max_execution_time', 3600);
+ini_set('max_execution_time', 1000000);
 
 use Illuminate\Http\Request;
 
@@ -16,6 +16,7 @@ class ExtractMatchController extends Controller
 {
     public function import()
     {
+/*
         // Import de la base EDX
         Excel::load('storage/app/edx.csv', function($reader) {
             foreach ($reader->get() as $book) {
@@ -240,6 +241,7 @@ class ExtractMatchController extends Controller
                 }
             }
         });
+*/
 
         $num_customers = CustomerModel::count();
         
