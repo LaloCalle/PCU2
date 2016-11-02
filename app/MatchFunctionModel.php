@@ -2,6 +2,8 @@
 
 namespace PCU;
 
+ini_set('max_execution_time', 0);
+
 use Illuminate\Database\Eloquent\Model;
 use PCU\CustomerModel;
 use PCU\MasterModel;

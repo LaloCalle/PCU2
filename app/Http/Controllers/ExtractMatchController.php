@@ -2,7 +2,7 @@
 
 namespace PCU\Http\Controllers;
 
-ini_set('max_execution_time', 1000000);
+ini_set('max_execution_time', 0);
 
 use Illuminate\Http\Request;
 
