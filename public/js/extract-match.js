@@ -20,7 +20,8 @@ $(function() {
                 route = direction+'/match-process';
                 var token = $('#token').val();
                 
-                for(var i = 1; i <= registros; i++){
+                //for(var i = 1; i <= registros; i++){
+                    i = 1;
                     porcentaje = (i*100)/registros;
                     porcentaje = Math.floor(porcentaje);
                     $.ajax({
@@ -50,8 +51,8 @@ $(function() {
                             console.log(e);
                         }
                     });
-                }
-                document.location.href=direction+'/';
+                //}
+                //document.location.href=direction+'/';
 			},
         	error: function(e){
         		console.log(e);
