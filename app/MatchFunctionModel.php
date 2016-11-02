@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class MatchFunctionModel extends Model
 {
-	public static function function_match($indice){
+	public static function function_match($indice, $reg_match){
 		// Verifico si el registro obtenido ($indice) ya entro en match con algún registro maestro
 		if(DB::table('match_tb')->where('id_customer',$indice)->count() <= 0){
 			// Obtengo el registro con el que se trabajará por medio del indice obtenido ($indice)
@@ -47,134 +47,145 @@ class MatchFunctionModel extends Model
 			DB::table('match_tb')->insert([
 			    ['id_master' => $last_id_master, 'id_customer' => $register->id]
 			]);
-
-			// Obtengo todos los registros que estén despues del registro que estamos procesando ($indice)
-			$customers = CustomerModel::where('id','>',$indice)->get();
-
-			$valorprueba = "";
-			foreach($customers as $customer){
-				// Verifico que el cliente que estamos tomando para la comparación no haya entrado en match con otro registro maestro.
-				if(DB::table('match_tb')->where('id_customer',$customer->id)->count() == 0){
-					// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($customer) a la función de match para verificar las coincidencias y obtener una ponderación.
-					$result = self::encuentra_ponderacion($customer, $register);
-					// Si el valor devuelto es match
-					if($result[0] == "match"){
-	    				// Obtengo un nuevo registro maestro creado a partir de los dos registros procesados.
-	    				$resultmaster = self::encuentra_maestro($customer, $register);
-	    				// Hago update en el registro maestro para insertar la información del nuevo registro maestro creado.
-	    				DB::table('master_tb')->where('id','=',$last_id_master)->update(['social_reason'=>$resultmaster['social_reason'],'rfc'=>$resultmaster['rfc']]);
-	    				// Hago update en la sucursal para insertar la información del nuevo registro maestro creado.
-	    				DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['country'=>$resultmaster['country'], 'state'=>$resultmaster['state'], 'city'=>$resultmaster['city'], 'street'=>$resultmaster['street'], 'no_int'=>$resultmaster['no_int'], 'no_ext'=>$resultmaster['no_ext'], 'colony'=>$resultmaster['colony'], 'postal_code'=>$resultmaster['postal_code']]);
-	    				// Hago update en los contactos para insertar la información del nuevo registro maestro creado.
-	    				if(isset($last_id_telephone)){
-	    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
-	    						DB::table('contact_tb')->where('id','=',$last_id_telephone)->update(['description'=>$resultmaster['telephone']]);
-	    					}
-	    				}else{
-	    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
-		    					$last_id_telephone = DB::table('contact_tb')->insertGetId(
-								    ['id_branch' => $last_id_branch, 'type' => 'phone', 'description' => $resultmaster['telephone'], 'name_contact' => '']
-								);
-		    				}
-	    				}
-	    				if(isset($last_id_mobile)){
-	    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
-	    						DB::table('contact_tb')->where('id','=',$last_id_mobile)->update(['description'=>$resultmaster['mobile']]);
-	    					}
-	    				}else{
-	    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
-	    						$last_id_mobile = DB::table('contact_tb')->insertGetId(
-							    	['id_branch' => $last_id_branch, 'type' => 'mobile', 'description' => $resultmaster['mobile'], 'name_contact' => '']
-								);
-	    					}
-	    				}
-	    				if(isset($last_id_email)){
-	    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
-	    						DB::table('contact_tb')->where('id','=',$last_id_email)->update(['description'=>$resultmaster['email']]);
-	    					}
-	    				}else{
-	    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
-		    					$last_id_email = DB::table('contact_tb')->insertGetId(
-								    ['id_branch' => $last_id_branch, 'type' => 'email', 'description' => $resultmaster['email'], 'name_contact' => '']
-								);
-		    				}
-	    				}
-						// Hago el registro del cliente que entro en match en la tabla match
-	    				DB::table('match_tb')->insert([
-						    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
-						]);
-					}else if($result[0] == "review"){
-	    				DB::table('review_tb')->insert([
-						    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
-						]);
-						DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['status_match'=>'review']);
-					}
-					$valorprueba = $valorprueba.$result[1]." | ";
-				}
-			}
-
-			// Aquí debe ir una función para crear el id de cliente único.
-			/*
-			 * El id se forma de 13 caracteres:
-			 * 5 letras del nombre del cliente.
-			 * 2 letras del código del país.
-			 * 3 letras del código de ciudad.
-			 * 3 letras del código de sucursal.
-			*/
-
-	        $branch = BranchModel::where('id',$last_id_branch)->first();
-	        $master = MasterModel::where('id',$branch->id_master)->first();
-
-	        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
-            $social_reason_tokens = explode(' ',$master->social_reason);
-            $count = count($social_reason_tokens);
-            $code_name = "";
-            if($count == 1){
-                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
-            }else if($count == 2){
-                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-            }else if($count == 3){
-                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-            }else if($count == 4){
-                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
-            }else if($count >= 5){
-                $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
-                $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
-            }
-
-            if(strlen($code_name) < 5){
-                $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
-                $code_name .= $aleatory_string;
-
-                $code_name = substr($code_name, 0, 5);
-            }
-
-	        // Obtengo las 2 letras del país
-	        $code_country = $branch->country;
-
-	        // Obtengo las 3 letras de la ciudad
-	        $code_city = $branch->city;
-
-	        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
-
-	        //Genero el id de cliente único
-	        $id_unique_customer = $code_name.$code_country.$code_city;
-	        $id_unique_customer = strtoupper($id_unique_customer);
-
-	        // Se agrega el id de cliente único a la base.
-	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);
-
-			return $indice." - ".$valorprueba;
 		}
+
+		$register = CustomerModel::where('id',$indice)->first();
+		$last_master = DB::table('match_tb')->where('id_customer',$indice)->first();
+		$last_id_master = MasterModel::where('id',$last_master->id_master)->first();
+		$last_id_master = $last_id_master->id;
+		$last_branch = DB::table('branch_tb')->where('id_master',$last_id_master)->first();
+		$last_id_branch = $last_branch->id;
+
+
+		// Obtengo todos los registros que estén despues del registro que estamos procesando ($indice)
+//			$customers = CustomerModel::where('id','>',$indice)->get();
+		$customer = CustomerModel::where('id',$reg_match)->first();
+
+		$valorprueba = "";
+
+
+//			foreach($customers as $customer){
+			// Verifico que el cliente que estamos tomando para la comparación no haya entrado en match con otro registro maestro.
+			if(DB::table('match_tb')->where('id_customer',$customer->id)->count() == 0){
+				// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($customer) a la función de match para verificar las coincidencias y obtener una ponderación.
+				$result = self::encuentra_ponderacion($customer, $register);
+				// Si el valor devuelto es match
+				if($result[0] == "match"){
+    				// Obtengo un nuevo registro maestro creado a partir de los dos registros procesados.
+    				$resultmaster = self::encuentra_maestro($customer, $register);
+    				// Hago update en el registro maestro para insertar la información del nuevo registro maestro creado.
+    				DB::table('master_tb')->where('id','=',$last_id_master)->update(['social_reason'=>$resultmaster['social_reason'],'rfc'=>$resultmaster['rfc']]);
+    				// Hago update en la sucursal para insertar la información del nuevo registro maestro creado.
+    				DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['country'=>$resultmaster['country'], 'state'=>$resultmaster['state'], 'city'=>$resultmaster['city'], 'street'=>$resultmaster['street'], 'no_int'=>$resultmaster['no_int'], 'no_ext'=>$resultmaster['no_ext'], 'colony'=>$resultmaster['colony'], 'postal_code'=>$resultmaster['postal_code']]);
+    				// Hago update en los contactos para insertar la información del nuevo registro maestro creado.
+    				if(isset($last_id_telephone)){
+    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
+    						DB::table('contact_tb')->where('id','=',$last_id_telephone)->update(['description'=>$resultmaster['telephone']]);
+    					}
+    				}else{
+    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
+	    					$last_id_telephone = DB::table('contact_tb')->insertGetId(
+							    ['id_branch' => $last_id_branch, 'type' => 'phone', 'description' => $resultmaster['telephone'], 'name_contact' => '']
+							);
+	    				}
+    				}
+    				if(isset($last_id_mobile)){
+    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
+    						DB::table('contact_tb')->where('id','=',$last_id_mobile)->update(['description'=>$resultmaster['mobile']]);
+    					}
+    				}else{
+    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
+    						$last_id_mobile = DB::table('contact_tb')->insertGetId(
+						    	['id_branch' => $last_id_branch, 'type' => 'mobile', 'description' => $resultmaster['mobile'], 'name_contact' => '']
+							);
+    					}
+    				}
+    				if(isset($last_id_email)){
+    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
+    						DB::table('contact_tb')->where('id','=',$last_id_email)->update(['description'=>$resultmaster['email']]);
+    					}
+    				}else{
+    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
+	    					$last_id_email = DB::table('contact_tb')->insertGetId(
+							    ['id_branch' => $last_id_branch, 'type' => 'email', 'description' => $resultmaster['email'], 'name_contact' => '']
+							);
+	    				}
+    				}
+					// Hago el registro del cliente que entro en match en la tabla match
+    				DB::table('match_tb')->insert([
+					    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
+					]);
+				}else if($result[0] == "review"){
+    				DB::table('review_tb')->insert([
+					    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
+					]);
+					DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['status_match'=>'review']);
+				}
+				$valorprueba = $valorprueba.$result[1]." | ";
+			}
+//			}
+
+		// Aquí debe ir una función para crear el id de cliente único.
+		/*
+		 * El id se forma de 13 caracteres:
+		 * 5 letras del nombre del cliente.
+		 * 2 letras del código del país.
+		 * 3 letras del código de ciudad.
+		 * 3 letras del código de sucursal.
+		*/
+
+        $branch = BranchModel::where('id',$last_id_branch)->first();
+        $master = MasterModel::where('id',$branch->id_master)->first();
+
+        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
+        $social_reason_tokens = explode(' ',$master->social_reason);
+        $count = count($social_reason_tokens);
+        $code_name = "";
+        if($count == 1){
+            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
+        }else if($count == 2){
+            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+        }else if($count == 3){
+            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+        }else if($count == 4){
+            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+        }else if($count >= 5){
+            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
+        }
+
+        if(strlen($code_name) < 5){
+            $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+            $code_name .= $aleatory_string;
+
+            $code_name = substr($code_name, 0, 5);
+        }
+
+        // Obtengo las 2 letras del país
+        $code_country = $branch->country;
+
+        // Obtengo las 3 letras de la ciudad
+        $code_city = $branch->city;
+
+        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
+
+        //Genero el id de cliente único
+        $id_unique_customer = $code_name.$code_country.$code_city;
+        $id_unique_customer = strtoupper($id_unique_customer);
+
+        // Se agrega el id de cliente único a la base.
+        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);
+
+		return $indice." - ".$valorprueba;
 	}
 
 	public static function encuentra_ponderacion($registro1, $registro2){

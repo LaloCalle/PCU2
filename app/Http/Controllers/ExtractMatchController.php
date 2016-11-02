@@ -252,7 +252,7 @@ class ExtractMatchController extends Controller
 
     public function match(Request $request)
     {
-        $resultado = MatchFunctionModel::function_match($request->indice);
+        $resultado = MatchFunctionModel::function_match($request->indice, $request->reg_match);
         return response()->json([
                 "mensaje" => "Match: ".$request->indice,
                 "resultado" => $resultado,
