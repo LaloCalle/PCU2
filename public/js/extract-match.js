@@ -20,39 +20,41 @@ $(function() {
                 route = direction+'/match-process';
                 var token = $('#token').val();
                 
-                //for(var i = 1; i <= registros; i++){
-                    i = 1;
-                    porcentaje = (i*100)/registros;
-                    porcentaje = Math.floor(porcentaje);
-                    $.ajax({
-                        async:false,
-                        url: route,
-                        headers: {'X-CSRF-TOKEN': token},
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            indice: i,
-                        },
-                        success: function(e){
-                            console.log(e['resultado']);
-                            $('#total-match p').remove();
-                            $('#total-match').append('<p>'+ i +' registros procesados de '+ registros +'.</p>');
-                            $( "#progressbar" ).progressbar({
-                                value: porcentaje,
-                                change: function() {
-                                    $( ".progress-label" ).text( $( "#progressbar" ).progressbar( "value" ) + "%" );
-                                },
-                                complete: function() {
-                                    $( ".progress-label" ).text("");
-                                }
-                            });
-                        },
-                        error: function(e){
-                            console.log(e);
-                        }
-                    });
-                //}
-                //document.location.href=direction+'/';
+                for(var i = 1; i <= registros; i++){
+                    for(var j = i+1; j <= registros; j++){
+                        porcentaje = (i*100)/registros;
+                        porcentaje = Math.floor(porcentaje);
+                        $.ajax({
+                            async:false,
+                            url: route,
+                            headers: {'X-CSRF-TOKEN': token},
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                                indice: i,
+                                reg_match: j,
+                            },
+                            success: function(e){
+                                console.log(e['resultado']);
+                                $('#total-match p').remove();
+                                $('#total-match').append('<p>'+ i +' registros procesados de '+ registros +'.</p>');
+                                $( "#progressbar" ).progressbar({
+                                    value: porcentaje,
+                                    change: function() {
+                                        $( ".progress-label" ).text( $( "#progressbar" ).progressbar( "value" ) + "%" );
+                                    },
+                                    complete: function() {
+                                        $( ".progress-label" ).text("");
+                                    }
+                                });
+                            },
+                            error: function(e){
+                                console.log(e);
+                            }
+                        });
+                    }
+                }
+                document.location.href=direction+'/';
 			},
         	error: function(e){
         		console.log(e);
