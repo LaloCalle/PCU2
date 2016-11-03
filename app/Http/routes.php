@@ -24,3 +24,6 @@ Route::get('extract-process','ExtractMatchController@import');
 Route::post('match-process','ExtractMatchController@match');
 
 Route::resource('master-record','MasterRecordController');
+
+// Possible Match...
+Route::resource('possible-match','PossibleMatchController');

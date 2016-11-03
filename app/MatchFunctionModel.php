@@ -13,7 +13,7 @@ class MatchFunctionModel extends Model
 {
 	public static function function_match($indice, $reg_match){
 		// Verifico si el registro obtenido ($indice) ya entro en match con algún registro maestro
-		if(DB::table('match_tb')->where('id_customer',$indice)->count() <= 0){
+		if(($indice+1) == $reg_match){
 			// Obtengo el registro con el que se trabajará por medio del indice obtenido ($indice)
 			$register = CustomerModel::where('id',$indice)->first();
 
@@ -47,22 +47,75 @@ class MatchFunctionModel extends Model
 			DB::table('match_tb')->insert([
 			    ['id_master' => $last_id_master, 'id_customer' => $register->id]
 			]);
+			
+			$branch = BranchModel::where('id',$last_id_branch)->first();
+	        $master = MasterModel::where('id',$branch->id_master)->first();
+
+	        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
+	        $social_reason_tokens = explode(' ',$master->social_reason);
+	        $count = count($social_reason_tokens);
+	        $code_name = "";
+	        if($count == 1){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
+	        }else if($count == 2){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	        }else if($count == 3){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+	        }else if($count == 4){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+	        }else if($count >= 5){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
+	        }
+
+	        if(strlen($code_name) < 5){
+	            $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+	            $code_name .= $aleatory_string;
+
+	            $code_name = substr($code_name, 0, 5);
+	        }
+
+	        // Obtengo las 2 letras del país
+	        $code_country = $branch->country;
+
+	        // Obtengo las 3 letras de la ciudad
+	        $code_city = $branch->city;
+
+	        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
+
+	        //Genero el id de cliente único
+	        $id_unique_customer = $code_name.$code_country.$code_city;
+	        $id_unique_customer = strtoupper($id_unique_customer);
+
+	        // Se agrega el id de cliente único a la base.
+	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);
 		}
-
-		$register = CustomerModel::where('id',$indice)->first();
-		$last_master = DB::table('match_tb')->where('id_customer',$indice)->first();
-		$last_id_master = MasterModel::where('id',$last_master->id_master)->first();
-		$last_id_master = $last_id_master->id;
-		$last_branch = DB::table('branch_tb')->where('id_master',$last_id_master)->first();
-		$last_id_branch = $last_branch->id;
-
 
 		// Obtengo todos los registros que estén despues del registro que estamos procesando ($indice)
 //			$customers = CustomerModel::where('id','>',$indice)->get();
 		$customer = CustomerModel::where('id',$reg_match)->first();
 
-		$valorprueba = "";
+		$register = CustomerModel::where('id',$indice)->first();
 
+		$valorprueba = "0.00";
+
+		if($customer->rfc == $register->rfc){
+			$last_master = DB::table('match_tb')->where('id_customer',$indice)->first();
+			$last_id_master = MasterModel::where('id',$last_master->id_master)->first();
+			$last_id_master = $last_id_master->id;
+			$last_branch = DB::table('branch_tb')->where('id_master',$last_id_master)->first();
+			$last_id_branch = $last_branch->id;
+
+			$valorprueba = "";
 
 //			foreach($customers as $customer){
 			// Verifico que el cliente que estamos tomando para la comparación no haya entrado en match con otro registro maestro.
@@ -123,73 +176,74 @@ class MatchFunctionModel extends Model
 				}
 				$valorprueba = $valorprueba.$result[1]." | ";
 			}
-//			}
 
-		// Aquí debe ir una función para crear el id de cliente único.
-		/*
-		 * El id se forma de 13 caracteres:
-		 * 5 letras del nombre del cliente.
-		 * 2 letras del código del país.
-		 * 3 letras del código de ciudad.
-		 * 3 letras del código de sucursal.
-		*/
+			// Aquí debe ir una función para crear el id de cliente único.
+			/*
+			 * El id se forma de 13 caracteres:
+			 * 5 letras del nombre del cliente.
+			 * 2 letras del código del país.
+			 * 3 letras del código de ciudad.
+			 * 3 letras del código de sucursal.
+			*/
 
-        $branch = BranchModel::where('id',$last_id_branch)->first();
-        $master = MasterModel::where('id',$branch->id_master)->first();
+	        $branch = BranchModel::where('id',$last_id_branch)->first();
+	        $master = MasterModel::where('id',$branch->id_master)->first();
 
-        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
-        $social_reason_tokens = explode(' ',$master->social_reason);
-        $count = count($social_reason_tokens);
-        $code_name = "";
-        if($count == 1){
-            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
-        }else if($count == 2){
-            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-        }else if($count == 3){
-            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-        }else if($count == 4){
-            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
-        }else if($count >= 5){
-            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
-            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
-        }
+	        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
+	        $social_reason_tokens = explode(' ',$master->social_reason);
+	        $count = count($social_reason_tokens);
+	        $code_name = "";
+	        if($count == 1){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
+	        }else if($count == 2){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	        }else if($count == 3){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+	        }else if($count == 4){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+	        }else if($count >= 5){
+	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
+	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
+	        }
 
-        if(strlen($code_name) < 5){
-            $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
-            $code_name .= $aleatory_string;
+	        if(strlen($code_name) < 5){
+	            $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+	            $code_name .= $aleatory_string;
 
-            $code_name = substr($code_name, 0, 5);
-        }
+	            $code_name = substr($code_name, 0, 5);
+	        }
 
-        // Obtengo las 2 letras del país
-        $code_country = $branch->country;
+	        // Obtengo las 2 letras del país
+	        $code_country = $branch->country;
 
-        // Obtengo las 3 letras de la ciudad
-        $code_city = $branch->city;
+	        // Obtengo las 3 letras de la ciudad
+	        $code_city = $branch->city;
 
-        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
+	        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
 
-        //Genero el id de cliente único
-        $id_unique_customer = $code_name.$code_country.$code_city;
-        $id_unique_customer = strtoupper($id_unique_customer);
+	        //Genero el id de cliente único
+	        $id_unique_customer = $code_name.$code_country.$code_city;
+	        $id_unique_customer = strtoupper($id_unique_customer);
 
-        // Se agrega el id de cliente único a la base.
-        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);
+	        // Se agrega el id de cliente único a la base.
+	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);   
+		}
 
-		return $indice." - ".$valorprueba;
+		return $indice." - ".$reg_match." - ".$valorprueba;
 	}
 
 	public static function encuentra_ponderacion($registro1, $registro2){
 		// Verifico porcentaje de coincidencia en columna nombre.
+/*
 		$name1 = $registro1->social_reason;
 		$name2 = $registro2->social_reason;
 		if($name1 == "" || $name1 == null && $name2 == "" || $name2 == null){
@@ -197,6 +251,7 @@ class MatchFunctionModel extends Model
 		}else{
 			$porcentajename = self::encuentra_porcentaje($name1, $name2, 0);
 		}
+*/
 
 		// Verifico porcentaje de coincidencia en columna rfc.
 		$rfc1 = $registro1->rfc;
@@ -210,23 +265,30 @@ class MatchFunctionModel extends Model
 		/***** Función de ponderación *****/
 		$puntajemaximo = 5;
 		// porcentaje para cada elemento en decimales
-		$valorname = 0.20;
-		$valorrfc = 0.80;
+//		$valorname = 0.20;
+		$valorrfc = 1;
 
 		// Obtenemos puntaje obtenido en cada elemento
+/*
 		if($porcentajename > 0){
 			$porcentajename = (($porcentajename * $puntajemaximo) / 100) * $valorname;
 		}
+*/
 		if($porcentajerfc > 0){
 			$porcentajerfc = (($porcentajerfc * $puntajemaximo) / 100) * $valorrfc;
 		}
 		
 		// Obtenemos el ponderaje total del registro maestro.
+/*
 		if($porcentajename == 1){
 			$valortotal = 4;
 		}else{
-			$valortotal = $porcentajename + $porcentajerfc;
+*/
+			//$valortotal = $porcentajename + $porcentajerfc;
+			$valortotal = $porcentajerfc;
+/*
 		}
+*/
 		/***** Fin función de ponderación *****/
 
 		//verifica dentro de que rango se encuentra este registro y regreso el valor match, review o nomatch
@@ -238,7 +300,7 @@ class MatchFunctionModel extends Model
 			$valor_match[0] = 'nomatch';
 		}
 
-		$valor_match[1] = $name2." -> ".$name1." = ".$porcentajename." - ".$rfc2." -> ".$rfc1." = ".$porcentajerfc." => ".$valortotal;
+		$valor_match[1] = /* $name2." -> ".$name1." = ".$porcentajename." - ".*/ $rfc2." -> ".$rfc1." = ".$porcentajerfc." => ".$valortotal;
 		return $valor_match;
 	}
 

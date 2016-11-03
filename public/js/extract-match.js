@@ -21,7 +21,7 @@ $(function() {
                 var token = $('#token').val();
                 
                 for(var i = 1; i <= registros; i++){
-                    for(var j = i+1; j <= registros; j++){
+                    for(var j = i+1; j < registros; j++){
                         porcentaje = (i*100)/registros;
                         porcentaje = Math.floor(porcentaje);
                         $.ajax({
@@ -37,7 +37,7 @@ $(function() {
                             success: function(e){
                                 console.log(e['resultado']);
                                 $('#total-match p').remove();
-                                $('#total-match').append('<p>'+ i +' registros procesados de '+ registros +'.</p>');
+                                $('#total-match').append('<p>Procesando registro '+ i +' de '+ registros +'.</p>');
                                 $( "#progressbar" ).progressbar({
                                     value: porcentaje,
                                     change: function() {
