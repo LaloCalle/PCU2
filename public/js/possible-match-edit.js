@@ -123,7 +123,7 @@ $(function() {
             var id_branch = $( "#id_branch" ).val();
             var token = $( "#token" ).val();
 
-            var route = direction+'/master-record/'+id_branch;
+            var route = direction+'/possible-match/'+id_master;
 
             $.ajax({
                 url: route,
@@ -153,7 +153,7 @@ $(function() {
                     other: other,
                 },
                 success: function(e){
-                    document.location.href=direction+'/master-record/'+id_branch;
+                    document.location.href=direction+'/possible-match/'+id_branch+'/edit/';
                 },
                 error: function(e){
                     console.log(e);

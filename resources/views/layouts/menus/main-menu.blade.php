@@ -39,10 +39,10 @@
             </ul>
           </li>
           <li>
-            <a href="#"><i class='fa fa-search fa-fw'></i> Customer Search</a>
+            <a href="{!!URL::to('/')!!}"><i class='fa fa-search fa-fw'></i> Customer Search</a>
           </li>
           <li>
-            <a href="#"><i class='fa fa-clone fa-fw'></i> Possible Match</a>
+            <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> Possible Match</a>
           </li>
           <li>
             <a href="#"><i class="fa fa-plus fa-fw"></i> New Customer Managment<span class="fa arrow"></span></a>

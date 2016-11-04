@@ -7,50 +7,101 @@
 		    	<p>Completa los match</p>
 		    	<h4 class="subtitle">Cliente existente</h4>
 		    </div>
+			<div class="col-md-12">
+		    	<h4 class="subtitle">Compañía</h4>
+		    </div>
 		    <div class="col-md-12">
-		    	{!! Form::model($master) !!}
-			    	<fieldset disabled>
-				    	<div class="row">
-				    		<div class="form-group col-md-6">
-				    			<input type="hidden" name="id_master" id="id_master" value="{!! $master->id !!}"></input>
-				    			{!! Form::text('social_reason', null, ['id' => 'search-full-name', 'class' => 'form-control', 'placeholder' => 'Nombre o Razón Social']) !!}
-				    		</div>
-				    		<div class="form-group col-md-6">
-				    			{!! Form::text('rfc', null, ['id' => 'search-rfc', 'class' => 'form-control', 'placeholder' => 'RFC']) !!}
-				    		</div>
-				    	</div>
-				    	<div class="row">
-				    		<div class="form-group col-md-4">
-				    			{!! Form::select('country', $countries, null, ['id' => 'search-country', 'class' => 'form-control', 'placeholder' => 'País']) !!}
-				    		</div>
-				    		<div class="form-group col-md-4">
-				    			{!! Form::select('city', $cities, null, ['id' => 'search-city', 'class' => 'form-control', 'placeholder' => 'Ciudad']) !!}
-				    		</div>
-				    		<div class="form-group col-md-4">
-				    			{!! Form::text('state', null, ['id' => 'search-state', 'class' => 'form-control', 'placeholder' => 'Estado']) !!}
-				    		</div>
-				    	</div>
-				    	<div class="row">
-				    		<div class="form-group col-md-4">
-				    			{!! Form::text('street', null, ['id' => 'search-street', 'class' => 'form-control', 'placeholder' => 'Calle']) !!}
-				    		</div>
-				    		<div class="form-group col-md-4">
-				    			{!! Form::text('no_int', null, ['id' => 'search-no_int', 'class' => 'form-control', 'placeholder' => 'No. Interior']) !!}
-				    		</div>
-				    		<div class="form-group col-md-4">
-				    			{!! Form::text('no_ext', null, ['id' => 'search-no_ext', 'class' => 'form-control', 'placeholder' => 'No. Exterior']) !!}
-				    		</div>
-				    	</div>
-				    	<div class="row">
-				    		<div class="form-group col-md-6">
-				    			{!! Form::text('colony', null, ['id' => 'search-colony', 'class' => 'form-control', 'placeholder' => 'Colonia']) !!}
-				    		</div>
-				    		<div class="form-group col-md-6">
-				    			{!! Form::text('postal_code', null, ['id' => 'search-postal_code', 'class' => 'form-control', 'placeholder' => 'Código Postal']) !!}
-				    		</div>
-				    	</div>
-					</fieldset>
-		    	{!! Form::close() !!}
+		    	<div class="table-responsive">
+		    		<table class="table table-hover table-bordered table-striped">
+		    			<tbody>
+		    				<tr>
+		    					<td><b>Nombre o Razón Social</b></td>
+		    					<td>{!! $master->social_reason !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>RFC</b></td>
+		    					<td>{!! $master->rfc !!}</td>
+		    				</tr>
+		    			</tbody>
+		    		</table>
+		    	</div>
+		    </div>
+			<div class="col-md-12">
+		    	<h4 class="subtitle">Sucursal</h4>
+		    </div>
+		    <div class="col-md-12">
+		    	<div class="table-responsive">
+		    		<table class="table table-hover table-bordered table-striped">
+		    			<tbody>
+		    				<tr>
+		    					<td><b>ID</b></td>
+		    					<td>{!! $branch->id_unique_customer !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>Descripción</b></td>
+		    					<td>{!! $branch->branch_description !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>Calle</b></td>
+		    					<td>{!! $branch->street !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>No. Exterior</b></td>
+		    					<td>{!! $branch->no_ext !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>No. Interior</b></td>
+		    					<td>{!! $branch->no_int !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>Colonia</b></td>
+		    					<td>{!! $branch->colony !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>Estado</b></td>
+		    					<td>{!! $branch->state !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>Ciudad</b></td>
+		    					<td>{!! $branch->city !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>País</b></td>
+		    					<td>{!! $branch->country !!}</td>
+		    				</tr>
+		    				<tr>
+		    					<td><b>Código Postal</b></td>
+		    					<td>{!! $branch->postal_code !!}</td>
+		    				</tr>
+		    			</tbody>
+		    		</table>
+		    	</div>
+		    </div>
+			<div class="col-md-12">
+		    	<h4 class="subtitle">Contactos</h4>
+		    </div>
+		    <div class="col-md-12">
+		    	<div class="table-responsive">
+		    		<table class="table table-hover table-bordered table-striped">
+		    			<thead>
+		    				<tr>
+		    					<th>Tipo</th>
+		    					<th>Descripción</th>
+		    				</tr>
+		    			</thead>
+		    			<tbody>
+		    				@foreach($contacts as $contact)
+			    				<tr>
+			    					<td><b>{!! $contact->type !!}</b></td>
+			    					<td>{!! $contact->description !!}</td>
+			    				</tr>
+		    				@endforeach
+		    			</tbody>
+		    		</table>
+		    	</div>
+		    </div>
+		    <div class="col-md-12">
+		    	<hr>
 		    </div>
 		    <div class="col-md-12">
 		    	<div>
@@ -184,13 +235,12 @@
 		    <div class="col-md-12 text-right btn-footer">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 		    	<button class="btn btn-secondary" id="match-button">Match</button>
-		    	@if($complete > 0)
-		    		{!!link_to_route('possible-match.edit', $title = "Complete", $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
-		    	@else
-		    		{!!link_to_route('possible-match.edit', $title = "Complete", $parameters = $master->id, $attributes = ['class' => 'btn btn-primary disabled'])!!}
-		    	@endif
+		    	{!!link_to_route('possible-match.edit', $title = "Complete", $parameters = $branch->id, $attributes = ['class' => 'btn btn-primary'])!!}
 		    </div>
 		</div>
 @endsection
 @section('table-result')
+@endsection
+@section('scripts')
+	{!!Html::script('js/custom-match.js')!!}
 @endsection

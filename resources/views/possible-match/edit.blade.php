@@ -167,9 +167,10 @@
 	    <div class="col-md-12 text-right btn-footer">
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 	    	<button class="btn btn-secondary" id="complete-update">Actualizar</button>
+	    	<a href="{!! env('APP_ROUTE_VM') !!}/possible-match/{!! $master->id !!}/link" class="btn btn-primary">Link</a>
 	    </div>
 	</div>
 @endsection
 @section('scripts')
-	{!!Html::script('js/master-record-edit.js')!!}
+	{!!Html::script('js/possible-match-edit.js')!!}
 @endsection

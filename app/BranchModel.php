@@ -50,10 +50,10 @@ class BranchModel extends Model
      
     public function scopeContact($query, $contact)
     {
-        $query->join('contact_tb','contact_tb.id_branch','=','branch_tb.id');
         if (trim($contact) != "")
         {
-            $query->where('contact_tb.description', 'LIKE', '%'.$contact.'%');
+            $query->join('contact_tb','contact_tb.id_branch','=','branch_tb.id')
+            ->where('contact_tb.description', 'LIKE', '%'.$contact.'%');
         }
     }
      

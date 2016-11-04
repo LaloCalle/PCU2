@@ -27,3 +27,4 @@ Route::resource('master-record','MasterRecordController');
 
 // Possible Match...
 Route::resource('possible-match','PossibleMatchController');
+Route::get('possible-match/{id}/link','PossibleMatchController@link');
