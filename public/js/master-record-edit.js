@@ -6,45 +6,45 @@ $(function() {
 	$( ".ui-progressbar-value" ).css( "width",porcentaje );
 	$( ".ui-progressbar-value" ).css( "display","block" );
 
-    $( "#complete-country" ).change(function(event){
+    $( "#edit-country" ).change(function(event){
         $.get(direction+"/cities/"+event.target.value+"",function(response, state){
-            $( "#complete-city" ).empty();
-            $( "#complete-city" ).append("<option>Ciudad</option>");
+            $( "#edit-city" ).empty();
+            $( "#edit-city" ).append("<option>Ciudad</option>");
             for(i=0; i<response.length; i++){
-                $( "#complete-city" ).append("<option value='"+ response[i].code +"'>"+ response[i].name +"</option>");
+                $( "#edit-city" ).append("<option value='"+ response[i].code +"'>"+ response[i].name +"</option>");
             }
         });
     });
 });
 
 $(function() {
-    $( "#complete-update" ).click(function(){
+    $( "#edit-update" ).click(function(){
         // Variables para validación
         var emailreg = /^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/;
         var cadena = /^([a-zA-Z]+)|([A-Za-z]+)/i;
         var telefono = /^[0-9]*$/;
         
         // Campos de compañía
-        var social_reason = $( "#complete-social_reason" ).val();
-        var rfc = $( "#complete-rfc" ).val();
+        var social_reason = $( "#edit-social_reason" ).val();
+        var rfc = $( "#edit-rfc" ).val();
 
         // Campos de sucursal
-        var id_unique_customer = $( "#complete-id_unique_customer" ).val();
-        var branch_description = $( "#complete-branch_description" ).val();
-        var country = $( "#complete-country" ).val();
-        var city = $( "#complete-city" ).val();
-        var postal_code = $( "#complete-postal_code" ).val();
-        var colony = $( "#complete-colony" ).val();
-        var state = $( "#complete-state" ).val();
-        var street = $( "#complete-street" ).val();
-        var no_ext = $( "#complete-no_ext" ).val();
-        var no_int = $( "#complete-no_int" ).val();
+        var id_unique_customer = $( "#edit-id_unique_customer" ).val();
+        var branch_description = $( "#edit-branch_description" ).val();
+        var country = $( "#edit-country" ).val();
+        var city = $( "#edit-city" ).val();
+        var postal_code = $( "#edit-postal_code" ).val();
+        var colony = $( "#edit-colony" ).val();
+        var state = $( "#edit-state" ).val();
+        var street = $( "#edit-street" ).val();
+        var no_ext = $( "#edit-no_ext" ).val();
+        var no_int = $( "#edit-no_int" ).val();
 
         // Campos de contactos
-        var email = $( "#complete-email" ).val();
-        var phone = $( "#complete-phone" ).val();
-        var mobile = $( "#complete-mobile" ).val();
-        var other = $( "#complete-other" ).val();
+        var email = $( "#edit-email" ).val();
+        var phone = $( "#edit-phone" ).val();
+        var mobile = $( "#edit-mobile" ).val();
+        var other = $( "#edit-other" ).val();
 
         //Comienzan validaciónes
         var atributos = "";
@@ -122,8 +122,9 @@ $(function() {
             var id_master = $( "#id_master" ).val();
             var id_branch = $( "#id_branch" ).val();
             var token = $( "#token" ).val();
+            var url = $( "#url" ).val();
 
-            var route = direction+'/master-record/'+id_branch;
+            var route = direction+'/'+url+'/'+id_master;
 
             $.ajax({
                 url: route,
@@ -153,7 +154,7 @@ $(function() {
                     other: other,
                 },
                 success: function(e){
-                    document.location.href=direction+'/master-record/'+id_branch;
+                    document.location.href=direction+'/'+url+'/'+id_branch+'/edit/';
                 },
                 error: function(e){
                     console.log(e);

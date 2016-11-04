@@ -4,6 +4,7 @@ namespace PCU;
 
 ini_set('max_execution_time', 0);
 
+use PCU\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use PCU\CustomerModel;
 use PCU\MasterModel;
@@ -189,50 +190,7 @@ class MatchFunctionModel extends Model
 	        $branch = BranchModel::where('id',$last_id_branch)->first();
 	        $master = MasterModel::where('id',$branch->id_master)->first();
 
-	        // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
-	        $social_reason_tokens = explode(' ',$master->social_reason);
-	        $count = count($social_reason_tokens);
-	        $code_name = "";
-	        if($count == 1){
-	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 5);
-	        }else if($count == 2){
-	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 4);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-	        }else if($count == 3){
-	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 3);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-	        }else if($count == 4){
-	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 2);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
-	        }else if($count >= 5){
-	            $code_name = substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[0])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[1])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[2])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[3])), 0, 1);
-	            $code_name .= substr(str_replace([' ','  ','   ','    ','     '],'',self::sanear_string($social_reason_tokens[4])), 0, 1);
-	        }
-
-	        if(strlen($code_name) < 5){
-	            $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
-	            $code_name .= $aleatory_string;
-
-	            $code_name = substr($code_name, 0, 5);
-	        }
-
-	        // Obtengo las 2 letras del país
-	        $code_country = $branch->country;
-
-	        // Obtengo las 3 letras de la ciudad
-	        $code_city = $branch->city;
-
-	        // Faltan las últimas 3 letras pero esas se agregarán en el complete ya que no existen sucursales en las bases importadas.
-
-	        //Genero el id de cliente único
-	        $id_unique_customer = $code_name.$code_country.$code_city;
-	        $id_unique_customer = strtoupper($id_unique_customer);
+	        $id_unique_customer = $this->getIdUnique($master->social_reason, $branch->country, $branch->city, '');
 
 	        // Se agrega el id de cliente único a la base.
 	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);   
