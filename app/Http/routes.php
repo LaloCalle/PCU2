@@ -15,6 +15,8 @@ Route::resource('/','IndexController');
 
 // Listas dinámicas
 Route::get('cities/{code}','DynamicListsController@cities');
+Route::get('postal-code-colonies/{code}','DynamicListsController@postalcodes');
+Route::get('postal-code-state/{code}','DynamicListsController@state');
 
 // Ejecución de extract y match
 Route::get('/match', function () {

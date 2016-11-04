@@ -1,4 +1,52 @@
 $(function() {
+    // Función para tener ciudades dependiendo del país seleccionado
+    $( "#link-country" ).change(function(event){
+        $.get(direction+"/cities/"+event.target.value+"",function(response, state){
+            $( "#link-city" ).empty();
+            $( "#link-city" ).append("<option>Ciudad</option>");
+            for(i=0; i<response.length; i++){
+                $( "#link-city" ).append("<option value='"+ response[i].code +"'>"+ response[i].name +"</option>");
+            }
+        });
+    });
+
+    // Función para cambiar el formulario dependiendo del país seleccionado
+    $( "#link-country" ).change(function(event){
+        var country = event.target.value;
+        if(country == "MX"){
+            $("#postal_codes_mx").css('display','block');
+            $("#postal_codes_other").css('display','none');
+        }else{
+            $("#postal_codes_mx").css('display','none');
+            $("#postal_codes_other").css('display','block');
+        }
+    });
+
+    // Función para el codigo postal de México
+    $( "#link-postal_code_mx" ).keyup(function() {
+        var code = $( "#link-postal_code_mx" ).val();
+
+        $.get(direction+"/postal-code-colonies/"+code+"",function(response, postalcodes){
+            $( "#link-colony_mx" ).empty();
+            $( "#link-colony_mx" ).append("<option>Colonia</option>");
+
+            for(i=0; i<response.length; i++){
+                colonias = response[i].colony.split(';');
+                for(j=0; j<colonias.length; j++){
+                    $( "#link-colony_mx" ).append("<option value='"+ colonias[j] +"'>"+ colonias[j] +"</option>");
+                }
+            }
+        });
+
+        $.get(direction+"/postal-code-state/"+code+"",function(response, state){
+            $( "#link-state_mx" ).val("");
+
+            for(i=0; i<response.length; i++){
+                $( "#link-state_mx" ).val(response[i].state);
+            }
+        });
+    });
+
     $( "#link-add-branch" ).click(function(){
         // Variables para validación
         var emailreg = /^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/;
@@ -8,9 +56,15 @@ $(function() {
         var branch_description = $( "#link-branch_description" ).val();
         var country = $( "#link-country" ).val();
         var city = $( "#link-city" ).val();
-        var postal_code = $( "#link-postal_code" ).val();
-        var colony = $( "#link-colony" ).val();
-        var state = $( "#link-state" ).val();
+        if(country == "MX"){
+            var postal_code = $( "#link-postal_code_mx" ).val();
+            var colony = $( "#link-colony_mx" ).val();
+            var state = $( "#link-state_mx" ).val();
+        }else{
+            var postal_code = $( "#link-postal_code" ).val();
+            var colony = $( "#link-colony" ).val();
+            var state = $( "#link-state" ).val();
+        }
         var street = $( "#link-street" ).val();
         var no_ext = $( "#link-no_ext" ).val();
         var no_int = $( "#link-no_int" ).val();

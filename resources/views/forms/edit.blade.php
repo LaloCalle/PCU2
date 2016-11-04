@@ -52,7 +52,7 @@
 	    			{!! Form::select('city', $cities, null, ['id' => 'edit-city', 'class' => 'form-control', 'placeholder' => 'Ciudad']) !!}
 	    		</div>
 		    </div>
-	    	<div class="row">
+	    	<div class="row" id="postal_codes_other">
 	    		<div class="form-group col-md-4">
 	    			{!! Form::text('postal_code', null, ['id' => 'edit-postal_code', 'class' => 'form-control', 'placeholder' => 'Código Postal']) !!}
 	    		</div>
@@ -62,6 +62,17 @@
 	    		<div class="form-group col-md-4">
 	    			{!! Form::text('state', null, ['id' => 'edit-state', 'class' => 'form-control', 'placeholder' => 'Estado']) !!}
 	    		</div>
+	    	</div>
+	    	<div class="row" id="postal_codes_mx" style="display: none;">
+				<div class="form-group col-md-4">
+					{!! Form::text('postal_code', null, ['id' => 'edit-postal_code_mx', 'class' => 'form-control', 'placeholder' => 'Código Postal']) !!}
+				</div>
+				<div class="form-group col-md-4">
+					{!! Form::select('colony', [], null, ['id' => 'edit-colony_mx', 'class' => 'form-control', 'placeholder' => 'Colonia']) !!}
+				</div>
+				<div class="form-group col-md-4">
+					{!! Form::text('state', null, ['id' => 'edit-state_mx', 'class' => 'form-control', 'placeholder' => 'Estado', 'disabled']) !!}
+				</div>
 	    	</div>
 	    	<div class="row">
 	    		<div class="form-group col-md-6">

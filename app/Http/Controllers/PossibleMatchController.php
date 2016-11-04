@@ -309,6 +309,8 @@ class PossibleMatchController extends Controller
         $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
         $cities = CityCatalogueModel::orderBy('name')->lists('name','code');
 
+        Session::flash('message-success','Registro de Sucursal correcto.');
+
         return view('possible-match.link',compact('master','branches','countries','cities'));
     }
 

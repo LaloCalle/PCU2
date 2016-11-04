@@ -1,4 +1,5 @@
 $(function() {
+    // Progressbar de complete
 	var porcentaje = $( ".progress-label" ).text();
 	$( "#progressbar-complete" ).progressbar({
     	value: porcentaje,
@@ -6,12 +7,80 @@ $(function() {
 	$( ".ui-progressbar-value" ).css( "width",porcentaje );
 	$( ".ui-progressbar-value" ).css( "display","block" );
 
+    // Función para tener ciudades dependiendo del país seleccionado
     $( "#edit-country" ).change(function(event){
         $.get(direction+"/cities/"+event.target.value+"",function(response, state){
             $( "#edit-city" ).empty();
             $( "#edit-city" ).append("<option>Ciudad</option>");
             for(i=0; i<response.length; i++){
                 $( "#edit-city" ).append("<option value='"+ response[i].code +"'>"+ response[i].name +"</option>");
+            }
+        });
+    });
+
+    // Función para cambiar el formulario a seleccion de CP existentes si es México
+    var country_selected = $( "#edit-country" ).val();
+    if(country_selected == "MX"){
+        $("#postal_codes_mx").css('display','block');
+        $("#postal_codes_other").css('display','none');
+
+        var code = $( "#edit-postal_code_mx" ).val();
+        $.get(direction+"/postal-code-colonies/"+code+"",function(response, postalcodes){
+            $( "#edit-colony_mx" ).empty();
+            $( "#edit-colony_mx" ).append("<option>Colonia</option>");
+
+            for(i=0; i<response.length; i++){
+                colonias = response[i].colony.split(';');
+                for(j=0; j<colonias.length; j++){
+                    $( "#edit-colony_mx" ).append("<option value='"+ colonias[j] +"'>"+ colonias[j] +"</option>");
+                }
+            }
+
+            $( "#edit-colony_mx" ).val($( "#edit-colony" ).val());
+        });
+
+        $.get(direction+"/postal-code-state/"+code+"",function(response, state){
+            $( "#edit-state_mx" ).val("");
+
+            for(i=0; i<response.length; i++){
+                $( "#edit-state_mx" ).val(response[i].state);
+            }
+        });
+    }
+
+    // Función para cambiar el formulario dependiendo del país seleccionado
+    $( "#edit-country" ).change(function(event){
+        var country = event.target.value;
+        if(country == "MX"){
+            $("#postal_codes_mx").css('display','block');
+            $("#postal_codes_other").css('display','none');
+        }else{
+            $("#postal_codes_mx").css('display','none');
+            $("#postal_codes_other").css('display','block');
+        }
+    });
+
+    // Función para el codigo postal de México
+    $( "#edit-postal_code_mx" ).keyup(function() {
+        var code = $( "#edit-postal_code_mx" ).val();
+
+        $.get(direction+"/postal-code-colonies/"+code+"",function(response, postalcodes){
+            $( "#edit-colony_mx" ).empty();
+            $( "#edit-colony_mx" ).append("<option>Colonia</option>");
+
+            for(i=0; i<response.length; i++){
+                colonias = response[i].colony.split(';');
+                for(j=0; j<colonias.length; j++){
+                    $( "#edit-colony_mx" ).append("<option value='"+ colonias[j] +"'>"+ colonias[j] +"</option>");
+                }
+            }
+        });
+
+        $.get(direction+"/postal-code-state/"+code+"",function(response, state){
+            $( "#edit-state_mx" ).val("");
+
+            for(i=0; i<response.length; i++){
+                $( "#edit-state_mx" ).val(response[i].state);
             }
         });
     });
@@ -33,9 +102,15 @@ $(function() {
         var branch_description = $( "#edit-branch_description" ).val();
         var country = $( "#edit-country" ).val();
         var city = $( "#edit-city" ).val();
-        var postal_code = $( "#edit-postal_code" ).val();
-        var colony = $( "#edit-colony" ).val();
-        var state = $( "#edit-state" ).val();
+        if(country == "MX"){
+            var postal_code = $( "#edit-postal_code_mx" ).val();
+            var colony = $( "#edit-colony_mx" ).val();
+            var state = $( "#edit-state_mx" ).val();
+        }else{
+            var postal_code = $( "#edit-postal_code" ).val();
+            var colony = $( "#edit-colony" ).val();
+            var state = $( "#edit-state" ).val();
+        }
         var street = $( "#edit-street" ).val();
         var no_ext = $( "#edit-no_ext" ).val();
         var no_int = $( "#edit-no_int" ).val();

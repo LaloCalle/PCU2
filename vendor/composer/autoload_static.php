@@ -307,6 +307,7 @@ class ComposerStaticInit693f6484e6a0d4a52205d45623f2756b
         'CreateMasterModelsTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_24_112734_create_master_models_table.php',
         'CreateMatchModelsTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_24_121422_create_match_models_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
+        'CreatePostalCodesMXModelsTable' => __DIR__ . '/../..' . '/database/migrations/2016_11_04_130240_create_postal_codes_m_x_models_table.php',
         'CreateReviewModelsTable' => __DIR__ . '/../..' . '/database/migrations/2016_10_24_121431_create_review_models_table.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_000000_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',

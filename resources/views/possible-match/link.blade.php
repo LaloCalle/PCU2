@@ -86,12 +86,16 @@
 			    			<input type="hidden" name="id_branch" id="id_branch" value="{!! $branch->id !!}"></input>
 			    			{!! Form::text('branch_description', null, ['id' => 'link-branch_description', 'class' => 'form-control', 'placeholder' => 'Descripción']) !!}
 			    		</div>
+			    	</div>
+			    	<div class="row">
 			    		<div class="form-group col-md-6">
 			    			{!! Form::select('country', $countries, null, ['id' => 'link-country', 'class' => 'form-control', 'placeholder' => 'País']) !!}
 			    		</div>
 			    		<div class="form-group col-md-6">
 			    			{!! Form::select('city', $cities, null, ['id' => 'link-city', 'class' => 'form-control', 'placeholder' => 'Ciudad']) !!}
 			    		</div>
+			    	</div>
+			    	<div class="row" id="postal_codes_other">
 			    		<div class="form-group col-md-4">
 			    			{!! Form::text('postal_code', null, ['id' => 'link-postal_code', 'class' => 'form-control', 'placeholder' => 'Código Postal']) !!}
 			    		</div>
@@ -101,6 +105,19 @@
 			    		<div class="form-group col-md-4">
 			    			{!! Form::text('state', null, ['id' => 'link-state', 'class' => 'form-control', 'placeholder' => 'Estado']) !!}
 			    		</div>
+			    	</div>
+			    	<div class="row" id="postal_codes_mx" style="display: none;">
+						<div class="form-group col-md-4">
+							{!! Form::text('postal_code', null, ['id' => 'link-postal_code_mx', 'class' => 'form-control', 'placeholder' => 'Código Postal']) !!}
+						</div>
+						<div class="form-group col-md-4">
+							{!! Form::select('colony', [], null, ['id' => 'link-colony_mx', 'class' => 'form-control', 'placeholder' => 'Colonia']) !!}
+						</div>
+						<div class="form-group col-md-4">
+							{!! Form::text('state', null, ['id' => 'link-state_mx', 'class' => 'form-control', 'placeholder' => 'Estado', 'disabled']) !!}
+						</div>
+			    	</div>
+			    	<div class="row">
 			    		<div class="form-group col-md-6">
 			    			{!! Form::text('street', null, ['id' => 'link-street', 'class' => 'form-control', 'placeholder' => 'Calle']) !!}
 			    		</div>

@@ -16,6 +16,7 @@ return array(
     'CreateMasterModelsTable' => $baseDir . '/database/migrations/2016_10_24_112734_create_master_models_table.php',
     'CreateMatchModelsTable' => $baseDir . '/database/migrations/2016_10_24_121422_create_match_models_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
+    'CreatePostalCodesMXModelsTable' => $baseDir . '/database/migrations/2016_11_04_130240_create_postal_codes_m_x_models_table.php',
     'CreateReviewModelsTable' => $baseDir . '/database/migrations/2016_10_24_121431_create_review_models_table.php',
     'CreateUsersTable' => $baseDir . '/database/migrations/2014_10_12_000000_create_users_table.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
