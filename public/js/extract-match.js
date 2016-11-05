@@ -21,7 +21,6 @@ $(function() {
                 var token = $('#token').val();
                 
                 for(var i = 1; i <= registros; i++){
-                    for(var j = i+1; j < registros; j++){
                         porcentaje = (i*100)/registros;
                         porcentaje = Math.floor(porcentaje);
                         $.ajax({
@@ -32,7 +31,6 @@ $(function() {
                             dataType: 'json',
                             data: {
                                 indice: i,
-                                reg_match: j,
                             },
                             success: function(e){
                                 console.log(e['resultado']);
@@ -52,7 +50,6 @@ $(function() {
                                 console.log(e);
                             }
                         });
-                    }
                 }
                 document.location.href=direction+'/';
 			},
