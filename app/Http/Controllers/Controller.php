@@ -13,7 +13,7 @@ abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function getIdUnique($social_reason, $country, $city, $branch_description)
+    public static function getIdUnique($social_reason, $country, $city, $branch_description)
     {
         // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.
         $social_reason_tokens = explode(' ',$social_reason);

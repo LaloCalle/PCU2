@@ -16,6 +16,7 @@ class MatchFunctionModel extends Model
 	public static function function_match($indice){
 		// Obtengo el registro con el que se trabajará por medio del indice obtenido ($indice)
 		$register = CustomerModel::where('id',$indice)->first();
+		$valorprueba = "";
 		
 		// Verifico si el registro obtenido ($indice) ya entro en match con algún registro maestro
 		if(MatchModel::where('id_customer',$indice)->count() == 0){
@@ -58,90 +59,90 @@ class MatchFunctionModel extends Model
 
 	        // Se agrega el id de cliente único a la base.
 	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);
-		}
 
-		// Obtengo todos los registros que estén despues del registro que estamos procesando ($indice)
-		$customers = CustomerModel::where('id','>',$indice)->where('rfc',$register->rfc)->get();
+			// Obtengo todos los registros que estén despues del registro que estamos procesando ($indice)
+			$customers = CustomerModel::where('id','>',$indice)->where('rfc',$register->rfc)->get();
 
-		foreach($customers as $customer){
-			// Verifico que el cliente que estamos tomando para la comparación no haya entrado en match con otro registro maestro.
-			if(DB::table('match_tb')->where('id_customer',$customer->id)->count() == 0){
-				// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($customer) a la función de match para verificar las coincidencias y obtener una ponderación.
-				$result = self::encuentra_ponderacion($customer, $register);
-				// Si el valor devuelto es match
-				if($result[0] == "match"){
-    				// Obtengo un nuevo registro maestro creado a partir de los dos registros procesados.
-    				$resultmaster = self::encuentra_maestro($customer, $register);
-    				// Hago update en el registro maestro para insertar la información del nuevo registro maestro creado.
-    				DB::table('master_tb')->where('id','=',$last_id_master)->update(['social_reason'=>$resultmaster['social_reason'],'rfc'=>$resultmaster['rfc']]);
-    				// Hago update en la sucursal para insertar la información del nuevo registro maestro creado.
-    				DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['country'=>$resultmaster['country'], 'state'=>$resultmaster['state'], 'city'=>$resultmaster['city'], 'street'=>$resultmaster['street'], 'no_int'=>$resultmaster['no_int'], 'no_ext'=>$resultmaster['no_ext'], 'colony'=>$resultmaster['colony'], 'postal_code'=>$resultmaster['postal_code']]);
-    				// Hago update en los contactos para insertar la información del nuevo registro maestro creado.
-    				if(isset($last_id_telephone)){
-    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
-    						DB::table('contact_tb')->where('id','=',$last_id_telephone)->update(['description'=>$resultmaster['telephone']]);
-    					}
-    				}else{
-    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
-	    					$last_id_telephone = DB::table('contact_tb')->insertGetId(
-							    ['id_branch' => $last_id_branch, 'type' => 'phone', 'description' => $resultmaster['telephone'], 'name_contact' => '']
-							);
+			foreach($customers as $customer){
+				// Verifico que el cliente que estamos tomando para la comparación no haya entrado en match con otro registro maestro.
+				if(DB::table('match_tb')->where('id_customer',$customer->id)->count() == 0){
+					// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($customer) a la función de match para verificar las coincidencias y obtener una ponderación.
+					$result = self::encuentra_ponderacion($customer, $register);
+					// Si el valor devuelto es match
+					if($result[0] == "match"){
+	    				// Obtengo un nuevo registro maestro creado a partir de los dos registros procesados.
+	    				$resultmaster = self::encuentra_maestro($customer, $register);
+	    				// Hago update en el registro maestro para insertar la información del nuevo registro maestro creado.
+	    				DB::table('master_tb')->where('id','=',$last_id_master)->update(['social_reason'=>$resultmaster['social_reason'],'rfc'=>$resultmaster['rfc']]);
+	    				// Hago update en la sucursal para insertar la información del nuevo registro maestro creado.
+	    				DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['country'=>$resultmaster['country'], 'state'=>$resultmaster['state'], 'city'=>$resultmaster['city'], 'street'=>$resultmaster['street'], 'no_int'=>$resultmaster['no_int'], 'no_ext'=>$resultmaster['no_ext'], 'colony'=>$resultmaster['colony'], 'postal_code'=>$resultmaster['postal_code']]);
+	    				// Hago update en los contactos para insertar la información del nuevo registro maestro creado.
+	    				if(isset($last_id_telephone)){
+	    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
+	    						DB::table('contact_tb')->where('id','=',$last_id_telephone)->update(['description'=>$resultmaster['telephone']]);
+	    					}
+	    				}else{
+	    					if($resultmaster['telephone'] != "" || $resultmaster['telephone'] != null){
+		    					$last_id_telephone = DB::table('contact_tb')->insertGetId(
+								    ['id_branch' => $last_id_branch, 'type' => 'phone', 'description' => $resultmaster['telephone'], 'name_contact' => '']
+								);
+		    				}
 	    				}
-    				}
-    				if(isset($last_id_mobile)){
-    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
-    						DB::table('contact_tb')->where('id','=',$last_id_mobile)->update(['description'=>$resultmaster['mobile']]);
-    					}
-    				}else{
-    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
-    						$last_id_mobile = DB::table('contact_tb')->insertGetId(
-						    	['id_branch' => $last_id_branch, 'type' => 'mobile', 'description' => $resultmaster['mobile'], 'name_contact' => '']
-							);
-    					}
-    				}
-    				if(isset($last_id_email)){
-    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
-    						DB::table('contact_tb')->where('id','=',$last_id_email)->update(['description'=>$resultmaster['email']]);
-    					}
-    				}else{
-    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
-	    					$last_id_email = DB::table('contact_tb')->insertGetId(
-							    ['id_branch' => $last_id_branch, 'type' => 'email', 'description' => $resultmaster['email'], 'name_contact' => '']
-							);
+	    				if(isset($last_id_mobile)){
+	    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
+	    						DB::table('contact_tb')->where('id','=',$last_id_mobile)->update(['description'=>$resultmaster['mobile']]);
+	    					}
+	    				}else{
+	    					if($resultmaster['mobile'] != "" || $resultmaster['mobile'] != null){
+	    						$last_id_mobile = DB::table('contact_tb')->insertGetId(
+							    	['id_branch' => $last_id_branch, 'type' => 'mobile', 'description' => $resultmaster['mobile'], 'name_contact' => '']
+								);
+	    					}
 	    				}
-    				}
-					// Hago el registro del cliente que entro en match en la tabla match
-    				DB::table('match_tb')->insert([
-					    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
-					]);
-				}else if($result[0] == "review"){
-    				DB::table('review_tb')->insert([
-					    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
-					]);
-					DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['status_match'=>'review']);
+	    				if(isset($last_id_email)){
+	    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
+	    						DB::table('contact_tb')->where('id','=',$last_id_email)->update(['description'=>$resultmaster['email']]);
+	    					}
+	    				}else{
+	    					if($resultmaster['email'] != "" || $resultmaster['email'] != null){
+		    					$last_id_email = DB::table('contact_tb')->insertGetId(
+								    ['id_branch' => $last_id_branch, 'type' => 'email', 'description' => $resultmaster['email'], 'name_contact' => '']
+								);
+		    				}
+	    				}
+						// Hago el registro del cliente que entro en match en la tabla match
+	    				DB::table('match_tb')->insert([
+						    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
+						]);
+					}else if($result[0] == "review"){
+	    				DB::table('review_tb')->insert([
+						    ['id_master' => $last_id_master, 'id_customer' => $customer->id]
+						]);
+						DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['status_match'=>'review']);
+					}
+					$valorprueba = $valorprueba.$result[1]." | ";
 				}
-				$valorprueba = $valorprueba.$result[1]." | ";
+
+				// Aquí debe ir una función para crear el id de cliente único.
+				/*
+				 * El id se forma de 13 caracteres:
+				 * 5 letras del nombre del cliente.
+				 * 2 letras del código del país.
+				 * 3 letras del código de ciudad.
+				 * 3 letras del código de sucursal.
+				*/
+
+		        $branch = BranchModel::where('id',$last_id_branch)->first();
+		        $master = MasterModel::where('id',$branch->id_master)->first();
+
+		        $id_unique_customer = Controller::getIdUnique($master->social_reason, $branch->country, $branch->city, '');
+
+		        // Se agrega el id de cliente único a la base.
+		        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);   
 			}
-
-			// Aquí debe ir una función para crear el id de cliente único.
-			/*
-			 * El id se forma de 13 caracteres:
-			 * 5 letras del nombre del cliente.
-			 * 2 letras del código del país.
-			 * 3 letras del código de ciudad.
-			 * 3 letras del código de sucursal.
-			*/
-
-	        $branch = BranchModel::where('id',$last_id_branch)->first();
-	        $master = MasterModel::where('id',$branch->id_master)->first();
-
-	        $id_unique_customer = Controller::getIdUnique($master->social_reason, $branch->country, $branch->city, '');
-
-	        // Se agrega el id de cliente único a la base.
-	        DB::table('branch_tb')->where('id','=',$last_id_branch)->update(['id_unique_customer'=>$id_unique_customer]);   
 		}
 
-		return $indice." - ".$reg_match." - ".$valorprueba;
+		return $indice." - ".$valorprueba;
 	}
 
 	public static function encuentra_ponderacion($registro1, $registro2){
