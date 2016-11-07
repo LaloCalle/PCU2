@@ -125,24 +125,24 @@ $(function() {
         var atributos = "";
         var num_errors = 0;
 
-        if( social_reason == "" || !cadena.test(social_reason) ){
+        if( social_reason == "" ){
             atributos += "<li>Ingresa un Nombre o Razón Social válido.</li>";
             num_errors += 1;
         }
-        if( rfc == "" || !cadena.test(rfc) ){
+        if( rfc == "" ){
             atributos += "<li>Ingresa RFC válido.</li>";
             num_errors += 1;
         }
 
-        if( branch_description == "" || !cadena.test(branch_description) ){
+        if( branch_description == "" ){
             atributos += "<li>Ingresa una Descripción de sucursal válida.</li>";
             num_errors += 1;
         }
-        if( country == "" || !cadena.test(country) ){
+        if( country == "" || country == "País" ){
             atributos += "<li>Selecciona un País válido.</li>";
             num_errors += 1;
         }
-        if( city == "" || !cadena.test(city) ){
+        if( city == "" || city == "Ciudad" ){
             atributos += "<li>Selecciona una Ciudad válida.</li>";
             num_errors += 1;
         }
@@ -150,24 +150,20 @@ $(function() {
             atributos += "<li>Ingresa un Código Postal válido.</li>";
             num_errors += 1;
         }
-        if( colony == "" || !cadena.test(colony) ){
+        if( colony == "" || colony == "Colonia" ){
             atributos += "<li>Ingresa una Colonia válida.</li>";
             num_errors += 1;
         }
-        if( state == "" || !cadena.test(state) ){
+        if( state == "" ){
             atributos += "<li>Ingresa un Estado válido.</li>";
             num_errors += 1;
         }
-        if( street == "" || !cadena.test(street) ){
+        if( street == "" ){
             atributos += "<li>Ingresa una Calle válida.</li>";
             num_errors += 1;
         }
-        if( no_ext == "" || !telefono.test(no_ext) ){
+        if( no_ext == "" ){
             atributos += "<li>Ingresa un Número Exterior válido.</li>";
-            num_errors += 1;
-        }
-        if( no_int != "" && !telefono.test(no_int) ){
-            atributos += "<li>Ingresa un Número Interior válido.</li>";
             num_errors += 1;
         }
 

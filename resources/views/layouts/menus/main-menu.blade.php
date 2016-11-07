@@ -39,19 +39,19 @@
             </ul>
           </li>
           <li>
-            <a href="{!!URL::to('/')!!}"><i class='fa fa-search fa-fw'></i> Customer Search</a>
+            <a href="{!!URL::to('/')!!}"><i class='fa fa-search fa-fw'></i> Busqueda de Cliente</a>
           </li>
           <li>
-            <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> Possible Match</a>
+            <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> Posibilidad de Match</a>
           </li>
           <li>
-            <a href="#"><i class="fa fa-plus fa-fw"></i> New Customer Managment<span class="fa arrow"></span></a>
+            <a href="#"><i class="fa fa-plus fa-fw"></i> Nuevo Cliente<span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
               <li>
-                <a href="#"><i class='fa fa-circle fa-fw'></i> New Customer</a>
+                <a href="{!!URL::to('/master-record/create-customer')!!}"><i class='fa fa-circle fa-fw'></i> Nueva Compañía</a>
               </li>
               <li>
-                <a href="#"><i class='fa fa-circle fa-fw'></i> New Branch</a>
+                <a href="{!!URL::to('/master-record/create-branch')!!}"><i class='fa fa-circle fa-fw'></i> Nueva Sucursal</a>
               </li>
             </ul>
           </li>

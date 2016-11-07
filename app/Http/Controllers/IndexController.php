@@ -33,11 +33,7 @@ class IndexController extends Controller
         ->street($request->get('street'))
         ->noext($request->get('noext'))
         ->noint($request->get('noint'))
-        ->whereExists(function ($query) {
-            $query->select(DB::raw(1))
-                  ->from('match_tb')
-                  ->whereRaw('match_tb.id_master = master_tb.id');
-        })
+        ->whereRaw('LENGTH(id_unique_customer) = 13')
         ->orderby('master_tb.social_reason')
         ->groupBy('branch_tb.id')
         ->paginate(25);

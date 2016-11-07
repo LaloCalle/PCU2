@@ -39,6 +39,19 @@ class MasterRecordController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createcustomer()
+    {
+        $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
+        $cities = CityCatalogueModel::orderBy('name')->lists('name','code');
+
+        return view('master-record.create', compact('countries','cities'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -47,6 +60,62 @@ class MasterRecordController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storecustomer(Request $request)
+    {
+        $master = MasterModel::create([
+                'social_reason' => $request->social_reason,
+                'rfc' => $request->rfc,
+            ]);
+
+        $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
+
+        $branch = BranchModel::create([
+                'id_master' => $master->id,
+                'id_unique_customer' => $request->id_unique_customer,
+                'branch_description' => $request->branch_description,
+                'country' => $request->country,
+                'city' => $request->city,
+                'postal_code' => $request->postal_code,
+                'colony' => $request->colony,
+                'state' => $request->state,
+                'street' => $request->street,
+                'no_ext' => $request->no_ext,
+                'no_int' => $request->no_int,
+                'status_match' => 'match',
+            ]);
+
+        ContactModel::create([
+                'id_branch' => $branch->id,
+                'type' => 'email',
+                'description' => $request->email,
+            ]);
+        ContactModel::create([
+                'id_branch' => $branch->id,
+                'type' => 'phone',
+                'description' => $request->phone,
+            ]);
+        ContactModel::create([
+                'id_branch' => $branch->id,
+                'type' => 'mobile',
+                'description' => $request->mobile,
+            ]);
+        ContactModel::create([
+                'id_branch' => $branch->id,
+                'type' => 'other',
+                'description' => $request->other,
+            ]);
+
+        return response()->json([
+            "mensaje" => "Customer Created"
+        ]);
     }
 
     /**

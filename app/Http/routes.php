@@ -25,8 +25,11 @@ Route::get('/match', function () {
 Route::get('extract-process','ExtractMatchController@import');
 Route::post('match-process','ExtractMatchController@match');
 
+// Registro Maestro...
+Route::get('master-record/create-customer','MasterRecordController@createcustomer');
+Route::post('master-record/store-customer','MasterRecordController@storecustomer');
 Route::resource('master-record','MasterRecordController');
 
 // Possible Match...
-Route::resource('possible-match','PossibleMatchController');
 Route::get('possible-match/{id}/link','PossibleMatchController@link');
+Route::resource('possible-match','PossibleMatchController');

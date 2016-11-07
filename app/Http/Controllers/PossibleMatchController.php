@@ -42,12 +42,7 @@ class PossibleMatchController extends Controller
                 $masters = $masters->where('branch_tb.status_match',$request->orderbystatus);
             }
         }
-        $masters = $masters->whereExists(function ($query) {
-            $query->select(DB::raw(1))
-                  ->from('match_tb')
-                  ->whereRaw('match_tb.id_master = master_tb.id');
-        })
-        ->orderby('master_tb.social_reason')
+        $masters = $masters->orderby('master_tb.social_reason')
         ->groupBy('branch_tb.id')
         ->paginate(25);
 
@@ -308,8 +303,6 @@ class PossibleMatchController extends Controller
 
         $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
         $cities = CityCatalogueModel::orderBy('name')->lists('name','code');
-
-        Session::flash('message-success','Registro de Sucursal correcto.');
 
         return view('possible-match.link',compact('master','branches','countries','cities'));
     }
