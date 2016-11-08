@@ -15,7 +15,7 @@
           algo@algo.com <i class="fa fa-angle-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-          <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil de Usuario</a>
+          <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ trans('strings.userprofile') }}</a>
           </li>
           <li class="divider"></li>
           <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
@@ -27,33 +27,34 @@
     <div class="navbar-default sidebar" role="navigation">
       <div class="sidebar-nav navbar-collapse">
         <ul class="nav" id="side-menu">
+          @if(session('lang') == "es")
+              <li>
+                <a href="{{ url('lang', ['en']) }}"><i class='fa fa-globe fa-fw'></i> {{ trans('strings.enlanguage') }}</a>
+              </li>
+          @else
+              <li>
+                <a href="{{ url('lang', ['es']) }}"><i class='fa fa-globe fa-fw'></i> {{ trans('strings.eslanguage') }}</a>
+              </li>
+          @endif
           <li>
-            <a href="#"><i class="fa fa-user fa-fw"></i> Usuarios<span class="fa arrow"></span></a>
+            <a href="#"><i class="fa fa-user fa-fw"></i> {{ trans('strings.users') }}<span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
               <li>
-                <a href="#"><i class='fa fa-plus fa-fw'></i> Agregar Usuario</a>
+                <a href="#"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.adduser') }}</a>
               </li>
               <li>
-                <a href="#"><i class='fa fa-th-list fa-fw'></i> Lista de Usuarios</a>
+                <a href="#"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
               </li>
             </ul>
           </li>
           <li>
-            <a href="{!!URL::to('/')!!}"><i class='fa fa-search fa-fw'></i> Busqueda de Cliente</a>
+            <a href="{!!URL::to('/customer-search')!!}"><i class='fa fa-search fa-fw'></i> {{ trans('strings.customersearch') }}</a>
           </li>
           <li>
-            <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> Posibilidad de Match</a>
+            <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> {{ trans('strings.possiblematch') }}</a>
           </li>
           <li>
-            <a href="#"><i class="fa fa-plus fa-fw"></i> Nuevo Cliente<span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level">
-              <li>
-                <a href="{!!URL::to('/master-record/create-customer')!!}"><i class='fa fa-circle fa-fw'></i> Nueva Compañía</a>
-              </li>
-              <li>
-                <a href="{!!URL::to('/master-record/create-branch')!!}"><i class='fa fa-circle fa-fw'></i> Nueva Sucursal</a>
-              </li>
-            </ul>
+            <a href="{!!URL::to('/master-record/create-customer')!!}"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.newcustomer') }}</a>
           </li>
         </ul>
       </div>

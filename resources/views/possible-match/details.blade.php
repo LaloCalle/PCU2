@@ -19,9 +19,9 @@
 						        <table class="table table-striped table-hover" id="table-match">
 							        <thead>
 							            <tr>
-							                <th class="text-center">Nombre</th>
-							                <th class="text-center">RFC</th>
-							                <th class="text-center">Dirección</th>
+							                <th class="text-center">{{ trans('strings.socialreason') }}</th>
+							                <th class="text-center">{{ trans('strings.rfc') }}</th>
+							                <th class="text-center">{{ trans('strings.address') }}</th>
 							            </tr>
 							        </thead>
 							        <tbody>
@@ -75,10 +75,10 @@
 						        <table class="table table-striped table-hover">
 							        <thead>
 							            <tr>
-							                <th class="text-center">Nombre</th>
-							                <th class="text-center">RFC</th>
-							                <th class="text-center">Dirección</th>
-							                <th class="text-center">Acciones</th>
+							                <th class="text-center">{{ trans('strings.socialreason') }}</th>
+							                <th class="text-center">{{ trans('strings.rfc') }}</th>
+							                <th class="text-center">{{ trans('strings.address') }}</th>
+							                <th class="text-center">{{ trans('strings.actions') }}</th>
 							            </tr>
 							        </thead>
 							        <tbody>
@@ -135,7 +135,7 @@
 		    <div class="col-md-12 text-right btn-footer">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 		    	<button class="btn btn-secondary" id="match-button">Match</button>
-		    	{!!link_to_route('possible-match.edit', $title = "Complete", $parameters = $branch->id, $attributes = ['class' => 'btn btn-primary'])!!}
+		    	{!!link_to_route('possible-match.edit', $title = trans('strings.completebutton'), $parameters = $branch->id, $attributes = ['class' => 'btn btn-primary'])!!}
 		    </div>
 		</div>
 @endsection

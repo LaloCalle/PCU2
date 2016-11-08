@@ -82,111 +82,83 @@ $(function() {
         var mobile = $( "#create-mobile" ).val();
         var other = $( "#create-other" ).val();
 
-        //Comienzan validaciónes
-        var atributos = "";
-        var num_errors = 0;
+        var token = $( "#token" ).val();
+        var route = direction+'/master-record/store-customer';
 
-        
-        if( social_reason == "" ){
-            atributos += "<li>Ingresa un Nombre o Razón Social válido.</li>";
-            num_errors += 1;
-        }
-        if( rfc == "" ){
-            atributos += "<li>Ingresa RFC válido.</li>";
-            num_errors += 1;
-        }
+        $.ajax({
+            url: route,
+            headers: {'X-CSRF-TOKEN': token},
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                social_reason: social_reason,
+                rfc: rfc,
 
-        if( branch_description == "" ){
-            atributos += "<li>Ingresa una Descripción de sucursal válida.</li>";
-            num_errors += 1;
-        }
-        if( country == "" || country == "País" ){
-            atributos += "<li>Selecciona un País válido.</li>";
-            num_errors += 1;
-        }
-        if( city == "" || city == "Ciudad" ){
-            atributos += "<li>Selecciona una Ciudad válida.</li>";
-            num_errors += 1;
-        }
-        if( postal_code == "" || !telefono.test(postal_code) ){
-            atributos += "<li>Ingresa un Código Postal válido.</li>";
-            num_errors += 1;
-        }
-        if( colony == "" || colony == "Colonia" ){
-            atributos += "<li>Ingresa una Colonia válida.</li>";
-            num_errors += 1;
-        }
-        if( state == "" ){
-            atributos += "<li>Ingresa un Estado válido.</li>";
-            num_errors += 1;
-        }
-        if( street == "" ){
-            atributos += "<li>Ingresa una Calle válida.</li>";
-            num_errors += 1;
-        }
-        if( no_ext == "" ){
-            atributos += "<li>Ingresa un Número Exterior válido.</li>";
-            num_errors += 1;
-        }
+                branch_description: branch_description,
+                country: country,
+                city: city,
+                postal_code: postal_code,
+                colony: colony,
+                state: state,
+                street: street,
+                no_ext: no_ext,
+                no_int: no_int,
 
-        if( email == "" || !emailreg.test(email) ){
-            atributos += "<li>Ingresa un E-mail válido.</li>";
-            num_errors += 1;
-        }
-        if( phone == "" || !telefono.test(phone) ){
-            atributos += "<li>Ingresa un Teléfono válido.</li>";
-            num_errors += 1;
-        }
-        if( mobile != "" && !telefono.test(mobile) ){
-            atributos += "<li>Ingresa un Móvil válido.</li>";
-            num_errors += 1;
-        }
+                email: email,
+                phone: phone,
+                mobile: mobile,
+                other: other,
+            },
+            success: function(e){
+                document.location.href=direction+'/';
+            },
+            error: function(e){
+                console.log(e);
 
-        if(num_errors > 0){
-            estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+                var cadena = e["responseText"];
+                var valores = JSON.parse(cadena);
 
-            $('body,html').animate({scrollTop : 0}, 0);
-            $('#errors-json').children().remove();
-            $('#errors-json').append(estructura);
-            $('#errors-json ul').children('li').remove();
-            $('#errors-json ul').append(atributos);
-            $('#errors-json').fadeIn();
-        }else{
-            var token = $( "#token" ).val();
+                estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 
-            var route = direction+'/master-record/store-customer';
+                var atributos = "";
+                if(valores["social_reason"])
+                    atributos += "<li>"+valores["social_reason"]+"</li>";
+                if(valores["rfc"])
+                    atributos += "<li>"+valores["rfc"]+"</li>";
+                if(valores["branch_description"])
+                    atributos += "<li>"+valores["branch_description"]+"</li>";
+                if(valores["country"])
+                    atributos += "<li>"+valores["country"]+"</li>";
+                if(valores["city"])
+                    atributos += "<li>"+valores["city"]+"</li>";
+                if(valores["postal_code"])
+                    atributos += "<li>"+valores["postal_code"]+"</li>";
+                if(valores["colony"])
+                    atributos += "<li>"+valores["colony"]+"</li>";
+                if(valores["state"])
+                    atributos += "<li>"+valores["state"]+"</li>";
+                if(valores["street"])
+                    atributos += "<li>"+valores["street"]+"</li>";
+                if(valores["no_ext"])
+                    atributos += "<li>"+valores["no_ext"]+"</li>";
+                if(valores["no_int"])
+                    atributos += "<li>"+valores["no_int"]+"</li>";
+                if(valores["email"])
+                    atributos += "<li>"+valores["email"]+"</li>";
+                if(valores["phone"])
+                    atributos += "<li>"+valores["phone"]+"</li>";
+                if(valores["mobile"])
+                    atributos += "<li>"+valores["mobile"]+"</li>";
+                if(valores["other"])
+                    atributos += "<li>"+valores["other"]+"</li>";
 
-            $.ajax({
-                url: route,
-                headers: {'X-CSRF-TOKEN': token},
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    social_reason: social_reason,
-                    rfc: rfc,
-
-                    branch_description: branch_description,
-                    country: country,
-                    city: city,
-                    postal_code: postal_code,
-                    colony: colony,
-                    state: state,
-                    street: street,
-                    no_ext: no_ext,
-                    no_int: no_int,
-
-                    email: email,
-                    phone: phone,
-                    mobile: mobile,
-                    other: other,
-                },
-                success: function(e){
-                    document.location.href=direction+'/';
-                },
-                error: function(e){
-                    console.log(e);
-                }
-            });
-        }
+                $('body,html').animate({scrollTop : 0}, 0);
+                $('#errors-json').children().remove();
+                $('#errors-json').append(estructura);
+                $('#errors-json ul').children('li').remove();
+                $('#errors-json ul').append(atributos);
+                $('#errors-json').fadeIn();
+            }
+        });
     });
 });

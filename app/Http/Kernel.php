@@ -29,5 +29,6 @@ class Kernel extends HttpKernel
         'auth' => \PCU\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \PCU\Http\Middleware\RedirectIfAuthenticated::class,
+        'web' => \PCU\Http\Middleware\LangMiddleware::class,
     ];
 }

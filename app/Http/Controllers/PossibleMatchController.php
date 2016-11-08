@@ -5,6 +5,8 @@ namespace PCU\Http\Controllers;
 use Illuminate\Http\Request;
 
 use PCU\Http\Requests;
+use PCU\Http\Requests\CreateBranchRequest;
+use PCU\Http\Requests\EditMasterRecordRequest;
 use PCU\Http\Controllers\Controller;
 use PCU\MasterModel;
 use PCU\BranchModel;
@@ -69,7 +71,7 @@ class PossibleMatchController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateBranchRequest $request)
     {
         $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
 
@@ -237,7 +239,7 @@ class PossibleMatchController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditMasterRecordRequest $request, $id)
     {
         DB::table('master_tb')->where('id',$request->id_master)->update(['social_reason'=>$request->social_reason,'rfc'=>$request->rfc]);
 

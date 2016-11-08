@@ -5,7 +5,7 @@
 		@include('forms.create')
 	    <div class="col-md-12 text-right btn-footer">
 			<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
-	    	<button class="btn btn-secondary" id="master-create">Crear</button>
+	    	<button class="btn btn-secondary" id="master-create">{{ trans('strings.add') }}</button>
 	    </div>
 	</div>
 @endsection

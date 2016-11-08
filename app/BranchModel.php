@@ -48,6 +48,24 @@ class BranchModel extends Model
         }
     }
      
+    public function scopeIduniquecustomer($query, $iduniquecustomer)
+    {
+        if (trim($iduniquecustomer) != "")
+        {
+            $query->where('branch_tb.id_unique_customer', 'LIKE', '%'.$iduniquecustomer.'%');
+            // $query->where(DB::raw("CONCAT(first_name,' ',last_name)"), 'LIKE', '%'.$name.'%');
+        }
+    }
+     
+    public function scopeBranchdescription($query, $branchdescription)
+    {
+        if (trim($branchdescription) != "")
+        {
+            $query->where('branch_tb.branch_description', 'LIKE', '%'.$branchdescription.'%');
+            // $query->where(DB::raw("CONCAT(first_name,' ',last_name)"), 'LIKE', '%'.$name.'%');
+        }
+    }
+     
     public function scopeContact($query, $contact)
     {
         if (trim($contact) != "")

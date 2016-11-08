@@ -6,23 +6,42 @@ use Illuminate\Http\Request;
 
 use PCU\Http\Requests;
 use PCU\Http\Controllers\Controller;
-use PCU\MasterModel;
 use PCU\BranchModel;
-use Illuminate\Support\Facades\DB;
 use Response;
-use Session;
-use Redirect;
 
-class IndexController extends Controller
+class CustomerSearchController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Redirect::to('/customer-search');
+        $masters = BranchModel::select('branch_tb.id_unique_customer','branch_tb.id','master_tb.social_reason','master_tb.rfc','branch_tb.branch_description')
+        ->name($request->get('name'))
+        ->rfc($request->get('rfc'))
+        ->iduniquecustomer($request->get('iduniquecustomer'))
+        ->branchdescription($request->get('branchdescription'))
+        ->contact($request->get('contact'))
+        ->country($request->get('country'))
+        ->city($request->get('city'))
+        ->state($request->get('state'))
+        ->postalcode($request->get('postalcode'))
+        ->colony($request->get('colony'))
+        ->street($request->get('street'))
+        ->noext($request->get('noext'))
+        ->noint($request->get('noint'))
+        ->whereRaw('LENGTH(id_unique_customer) = 13')
+        ->orderby('master_tb.social_reason')
+        ->groupBy('branch_tb.id')
+        ->paginate(25);
+
+        $view = view('index',compact('masters'));
+        if($request->ajax()){
+            $sections = $view->renderSections();
+            return Response::json($sections['table-result']);
+        }else return $view;
     }
 
     /**
