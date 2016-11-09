@@ -144,13 +144,13 @@ class MasterRecordController extends Controller
 
         foreach($contacts as $contact){
             if($contact->type == "email"){
-                $contact->type = "E-mail";
+                $contact->type = trans('strings.email');
             }else if($contact->type == "phone"){
-                $contact->type = "Teléfono";
+                $contact->type = trans('strings.phone');
             }else if($contact->type == "mobile"){
-                $contact->type = "Móvil";
+                $contact->type = trans('strings.mobile');
             }else if($contact->type == "other"){
-                $contact->type = "Otro";
+                $contact->type = trans('strings.other');
             }
         }
 
