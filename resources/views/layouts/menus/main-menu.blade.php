@@ -12,13 +12,13 @@
     <ul class="nav navbar-top-links navbar-right">
       <li class="dropdown">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          algo@algo.com <i class="fa fa-angle-down"></i>
+          {!! Auth::user()->name !!} <i class="fa fa-angle-down"></i>
         </a>
         <ul class="dropdown-menu dropdown-user">
-          <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ trans('strings.userprofile') }}</a>
+          <li><a href="{!!URL::to('/users/'.Auth::user()->id)!!}"><i class="fa fa-user fa-fw"></i> {{ trans('strings.userprofile') }}</a>
           </li>
           <li class="divider"></li>
-          <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+          <li><a href="{!!URL::to('/logout')!!}"><i class="fa fa-sign-out fa-fw"></i> {{ trans('strings.logout') }}</a>
           </li>
         </ul>
       </li>
@@ -36,23 +36,27 @@
                 <a href="{{ url('lang', ['es']) }}"><i class='fa fa-globe fa-fw'></i> {{ trans('strings.eslanguage') }}</a>
               </li>
           @endif
-          <li>
-            <a href="#"><i class="fa fa-user fa-fw"></i> {{ trans('strings.users') }}<span class="fa arrow"></span></a>
-            <ul class="nav nav-second-level">
-              <li>
-                <a href="{!!URL::to('/users/create')!!}"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.adduser') }}</a>
-              </li>
-              <li>
-                <a href="/users"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
-              </li>
-            </ul>
-          </li>
+          @if(Auth::user()->p_superadmin == 1)
+            <li>
+              <a href="#"><i class="fa fa-user fa-fw"></i> {{ trans('strings.users') }}<span class="fa arrow"></span></a>
+              <ul class="nav nav-second-level">
+                <li>
+                  <a href="{!!URL::to('/users/create')!!}"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.adduser') }}</a>
+                </li>
+                <li>
+                  <a href="/users"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
+                </li>
+              </ul>
+            </li>
+          @endif
           <li>
             <a href="{!!URL::to('/customer-search')!!}"><i class='fa fa-search fa-fw'></i> {{ trans('strings.customersearch') }}</a>
           </li>
-          <li>
-            <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> {{ trans('strings.possiblematch') }}</a>
-          </li>
+          @if(Auth::user()->p_admin == 1)
+            <li>
+              <a href="{!!URL::to('/possible-match/')!!}"><i class='fa fa-clone fa-fw'></i> {{ trans('strings.possiblematch') }}</a>
+            </li>
+          @endif
           <li>
             <a href="{!!URL::to('/master-record/create-customer')!!}"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.newcustomer') }}</a>
           </li>

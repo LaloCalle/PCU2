@@ -5,20 +5,14 @@ namespace PCU\Http\Controllers;
 use Illuminate\Http\Request;
 
 use PCU\Http\Requests;
+use PCU\Http\Requests\AuthRequest;
 use PCU\Http\Controllers\Controller;
-use PCU\MasterModel;
-use PCU\BranchModel;
-use Illuminate\Support\Facades\DB;
-use Response;
+use Auth;
 use Session;
 use Redirect;
 
-class IndexController extends Controller
+class AuthController extends Controller
 {
-    public function __construct(){
-        $this->middleware('auth');
-    }
-    
     /**
      * Display a listing of the resource.
      *
@@ -26,7 +20,7 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return Redirect::to('/customer-search');
+        return view('auth.login');
     }
 
     /**
@@ -45,9 +39,24 @@ class IndexController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AuthRequest $request)
     {
-        abort(400);
+        if(Auth::attempt(['username'=>$request->username, 'password'=>$request->password])){
+            return Redirect::to('/');
+        }
+        Session::flash('message-error', trans('strings.loginincorrectalert'));
+        return Redirect::to('/login');
+    }
+
+    /**
+     * Logout
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logout()
+    {
+        Auth::logout();
+        return Redirect::to('login');
     }
 
     /**

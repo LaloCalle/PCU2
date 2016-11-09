@@ -96,7 +96,9 @@
 					        		<td class="text-center">{!! $master->branch_description !!}</td>
 					        		<td class="text-center" style="min-width: 250px;">
 					        			{!!link_to_route('master-record.show', $title = trans('strings.view'), $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
-					        			{!! link_to('/', $title = trans('strings.documentbutton'), $parameters = ['class'=>'btn btn-primary'], $attributes = []) !!}
+					        			@if(Auth::user()->p_document == 1)
+					        				{!! link_to('/', $title = trans('strings.documentbutton'), $parameters = ['class'=>'btn btn-primary'], $attributes = []) !!}
+					        			@endif
 					        		</td>
 					        	</tr>
 							@endforeach

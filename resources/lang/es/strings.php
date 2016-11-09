@@ -30,6 +30,9 @@ return [
 	// User Profile
     'userprofile' => 'Perfil de Usuario',
 
+    // Logout
+    'logout' => 'Salir',
+
     /*
     |--------------------------------------------------------------------------
     | Alerts Language Lines
@@ -180,11 +183,12 @@ return [
     */
 
     'password' => 'Contraseña',
+    'passwordconfirm' => 'Confirma tu Contraseña',
     'all' => 'Todos',
     'permissions' => 'Permisos',
-    'superadmin' => 'Super Usuario',
-    'admin' => 'Administrador',
-    'documenter' => 'Documentador',
+    'superadmin' => 'Super Usuario (Usuarios)',
+    'admin' => 'Administrador (Posibilidad de Match)',
+    'documenter' => 'Documentador (Documentar)',
 
     /*
     |--------------------------------------------------------------------------
@@ -201,5 +205,37 @@ return [
     */
 
     'editpasswordnote' => 'Recuerda que si deseas conservar la contraseña actual debes dejar el siguiente campo en blanco.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Login Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'username' => 'Nombre de Usuario',
+    'login' => 'Ingresa',
+    'passwordquestion' => '¿Has olvidado tu usuario o contraseña?',
+    'loginincorrectalert' => 'Datos incorrectos',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Recovery Pass Mail Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'insertmail' => 'Ingresa tu Correo Electrónico',
+    'sendlink' => 'Enviar Link',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Pass Mail Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'hello' => 'Hola',
+    'recoverynote' => 'Te recordamos que tu nombre de usuario registrado es',
+    'resetpasswordnote1' => 'Si deseas resetear tu password, sigue el siguiente link',
+    'resetpassword' => 'Resetear Contraseña',
+    'resetpasswordnote2' => 'de lo contrario ignora éste link',
 
 ];

@@ -18,7 +18,13 @@
 						</div>
 					</div>
 					@include('users.forms.usrpass')
-					@include('users.forms.usrpermissions')
+					@if(Auth::user()->p_superadmin == 0)
+						<fieldset disabled>
+					@endif
+						@include('users.forms.usrpermissions')
+					@if(Auth::user()->p_superadmin == 0)
+						</fieldset>
+					@endif
 				</fieldset>
 				<div class="form-group text-right">
 					{!!Form::submit(trans('strings.update'),['class'=>'btn btn-primary'])!!}

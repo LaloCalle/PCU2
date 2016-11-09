@@ -13,6 +13,13 @@ abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function notFound($value)
+    {
+        if(!$value){
+            abort(404);
+        }
+    }
+
     public static function getIdUnique($social_reason, $country, $city, $branch_description)
     {
         // Obtengo las primeras 5 letras, eliminando espacios y caracteres especiales para al final tomar las primeras 5 letras.

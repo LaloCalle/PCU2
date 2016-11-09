@@ -30,6 +30,9 @@ return [
 	// User Profile
     'userprofile' => 'User Profile',
 
+    // Logout
+    'logout' => 'Logout',
+
     /*
     |--------------------------------------------------------------------------
     | Alerts Language Lines
@@ -179,11 +182,12 @@ return [
     */
 
     'password' => 'Password',
+    'passwordconfirm' => 'Confirm Password',
     'all' => 'All',
     'permissions' => 'Permissions',
-    'superadmin' => 'Super User',
-    'admin' => 'Administrator',
-    'documenter' => 'Documenter',
+    'superadmin' => 'Super User (Users)',
+    'admin' => 'Administrator (Possible Match)',
+    'documenter' => 'Documenter (Document)',
 
     /*
     |--------------------------------------------------------------------------
@@ -200,4 +204,36 @@ return [
     */
 
     'editpasswordnote' => 'Remember that if you want to keep the current password must leave the following field blank.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Login Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'username' => 'Username',
+    'login' => 'Login',
+    'passwordquestion' => 'Forgot your username or password?',
+    'loginincorrectalert' => 'Incorrect data',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Recovery Pass Mail Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'insertmail' => 'Enter your E-mail',
+    'sendlink' => 'Send Link',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auth Pass Mail Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'hello' => 'Hello',
+    'recoverynote' => 'We remind you that your name registered user is',
+    'resetpasswordnote1' => 'If you want to reset your password, follow the link below',
+    'resetpassword' => 'Reset Password',
+    'resetpasswordnote2' => 'otherwise just ignore this link',
 ];

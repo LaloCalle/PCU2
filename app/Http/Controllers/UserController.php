@@ -17,11 +17,17 @@ use Illuminate\Routing\Route;
 class UserController extends Controller
 {
     public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('superadmin',['except'=>['show','edit','update','destroy']]);
         $this->beforeFilter('@find',['only'=>['show','edit','update','destroy']]);
     }
 
     public function find(Route $route){
         $this->user = User::find($route->getParameter('users'));
+        $this->notFound($this->user);
+        if($this->user->id != Auth::user()->id){
+            $this->middleware('superadmin');
+        }
     }
 
     /**
@@ -32,6 +38,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::orderBy('name','asc')
+                ->where('id','!=',Auth::user()->id)
                 ->paginate(25);
 
         return view('users.index',compact('users'));

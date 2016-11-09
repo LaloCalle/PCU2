@@ -17,9 +17,20 @@ use PCU\MatchFunctionModel;
 use Illuminate\Support\Facades\DB;
 use Response;
 use Session;
+use Illuminate\Routing\Route;
 
 class MasterRecordController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->beforeFilter('@find',['only'=>['show','edit','update','destroy']]);
+    }
+
+    public function find(Route $route){
+        $this->branch = BranchModel::find($route->getParameter('master_record'));
+        $this->notFound($this->branch);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,7 +38,7 @@ class MasterRecordController extends Controller
      */
     public function index()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -37,7 +48,7 @@ class MasterRecordController extends Controller
      */
     public function create()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -61,7 +72,7 @@ class MasterRecordController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -139,7 +150,7 @@ class MasterRecordController extends Controller
     public function show($id)
     {
         $contacts = ContactModel::where('id_branch',$id)->get();
-        $branch = BranchModel::where('id',$id)->first();
+        $branch = $this->branch;
         $master = MasterModel::where('id',$branch->id_master)->first();
 
         foreach($contacts as $contact){
@@ -312,6 +323,6 @@ class MasterRecordController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(400);
     }
 }

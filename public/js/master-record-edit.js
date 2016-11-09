@@ -126,7 +126,7 @@ $(function() {
         var token = $( "#token" ).val();
         var url = $( "#url" ).val();
 
-        var route = direction+'/'+url+'/'+id_master;
+        var route = direction+'/'+url+'/'+id_branch;
 
         $.ajax({
             url: route,

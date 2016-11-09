@@ -13,6 +13,17 @@
 
 Route::group(['middleware' => ['web']], function () {
 
+	// Authentication routes...
+	Route::resource('login','AuthController');
+	Route::get('logout','AuthController@logout');
+
+	// Reset Password routes...
+	Route::get('password/email','Auth\PasswordController@getEmail');
+	Route::post('password/email','Auth\PasswordController@postEmail');
+
+	Route::get('password/reset/{token}','Auth\PasswordController@getReset');
+	Route::post('password/reset','Auth\PasswordController@postReset');
+
 	// Index
 	Route::resource('/','IndexController');
 	Route::resource('/customer-search','CustomerSearchController');

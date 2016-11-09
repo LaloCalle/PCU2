@@ -17,9 +17,27 @@ use PCU\MatchFunctionModel;
 use Illuminate\Support\Facades\DB;
 use Response;
 use Session;
+use Illuminate\Routing\Route;
 
 class PossibleMatchController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('admin');
+        $this->beforeFilter('@find',['only'=>['show','edit','update','destroy']]);
+        $this->beforeFilter('@findLink',['only'=>['link']]);
+    }
+
+    public function find(Route $route){
+        $this->branch = BranchModel::find($route->getParameter('possible_match'));
+        $this->notFound($this->branch);
+    }
+
+    public function findLink(Route $route){
+        $this->master = MasterModel::find($route->getParameter('id'));
+        $this->notFound($this->master);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -62,7 +80,7 @@ class PossibleMatchController extends Controller
      */
     public function create()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -135,7 +153,7 @@ class PossibleMatchController extends Controller
     public function show($id)
     {
         $contacts = ContactModel::where('id_branch',$id)->get();
-        $branch = BranchModel::where('id',$id)->first();
+        $branch = $this->branch;
         $master = MasterModel::where('id',$branch->id_master)->first();
 
         foreach($contacts as $contact){
@@ -191,7 +209,7 @@ class PossibleMatchController extends Controller
     public function edit($id)
     {
         $contacts = ContactModel::where('id_branch',$id)->get();
-        $branch = BranchModel::where('id',$id)->first();
+        $branch = $this->branch;
         $master = MasterModel::where('id',$branch->id_master)->first();
 
         $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
@@ -320,7 +338,7 @@ class PossibleMatchController extends Controller
 
     public function link($id)
     {
-        $master = MasterModel::where('id',$id)->first();
+        $master = $this->master;
         $branches = BranchModel::where('id_master',$id)->orderby('branch_description')->get();
 
         $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
@@ -337,6 +355,6 @@ class PossibleMatchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(400);
     }
 }

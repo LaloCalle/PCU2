@@ -11,6 +11,10 @@ use Response;
 
 class CustomerSearchController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -51,7 +55,7 @@ class CustomerSearchController extends Controller
      */
     public function create()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -62,7 +66,7 @@ class CustomerSearchController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -73,7 +77,7 @@ class CustomerSearchController extends Controller
      */
     public function show($id)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -84,7 +88,7 @@ class CustomerSearchController extends Controller
      */
     public function edit($id)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -96,7 +100,7 @@ class CustomerSearchController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -107,6 +111,6 @@ class CustomerSearchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(400);
     }
 }
