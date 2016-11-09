@@ -40,10 +40,10 @@
             <a href="#"><i class="fa fa-user fa-fw"></i> {{ trans('strings.users') }}<span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
               <li>
-                <a href="#"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.adduser') }}</a>
+                <a href="{!!URL::to('/users/create')!!}"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.adduser') }}</a>
               </li>
               <li>
-                <a href="#"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
+                <a href="/users"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
               </li>
             </ul>
           </li>

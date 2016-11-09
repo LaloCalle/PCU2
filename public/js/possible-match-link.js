@@ -108,7 +108,20 @@ $(function() {
                 other: other,
             },
             success: function(e){
-                document.location.href=direction+'/possible-match/'+id_master+'/link/';
+                if(e['mensaje'] == "Match"){
+                    estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>"+ e['alerta'] +"</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-json').children().remove();
+                    $('#errors-json').append(estructura);
+                    $('#errors-json ul').children('li').remove();
+                    $('#errors-json ul').append(atributos);
+                    $('#errors-json').fadeIn();
+                }else{
+                    document.location.href=direction+'/possible-match/'+id_master+'/link/';
+                }
             },
             error: function(e){
                 console.log(e);

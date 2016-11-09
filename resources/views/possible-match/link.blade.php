@@ -50,8 +50,8 @@
 		    					<td>{!! $branch->id_unique_customer !!}</td>
 		    					<td>{!! $branch->branch_description !!}</td>
 		    					<td class="text-center" style="min-width: 250px;">
-		    						<button class="btn btn-primary">{{ trans('strings.editbutton') }}</button>
-		    						<button class="btn btn-primary">{{ trans('strings.deletebutton') }}</button>
+		    						<button class="btn btn-primary">{{ trans('strings.edit') }}</button>
+		    						<button class="btn btn-primary">{{ trans('strings.delete') }}</button>
 				        		</td>
 		    				</tr>
 		    			@endforeach

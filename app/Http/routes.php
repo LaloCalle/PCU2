@@ -13,8 +13,8 @@
 
 Route::group(['middleware' => ['web']], function () {
 
+	// Index
 	Route::resource('/','IndexController');
-
 	Route::resource('/customer-search','CustomerSearchController');
 
 	// Listas dinámicas
@@ -37,6 +37,9 @@ Route::group(['middleware' => ['web']], function () {
 	// Possible Match...
 	Route::get('possible-match/{id}/link','PossibleMatchController@link');
 	Route::resource('possible-match','PossibleMatchController');
+
+	// Users
+	Route::resource('users','UserController');
 
 	// Language...
     Route::get('lang/{lang}', function ($lang) {

@@ -10,6 +10,12 @@
     <!-- Bootstrap -->
     {!!Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')!!}
 
+    <!-- Switch -->
+    {!!Html::style('css/highlight.css')!!}
+    {!!Html::style('css/bootstrap3/bootstrap-switch.css')!!}
+    {!!Html::style('http://getbootstrap.com/assets/css/docs.min.css')!!}
+    {!!Html::style('css/main.css')!!}
+
     <!-- Menú -->
     {!!Html::style('css/sb-admin.css')!!}
     {!!Html::style('css/metisMenu.min.css')!!}
@@ -58,6 +64,14 @@
 
     <!-- jQueryUI -->
     {!!Html::script('http://code.jquery.com/ui/1.11.3/jquery-ui.js')!!}
+
+    <!-- Switch -->
+    {!!Html::script('js/highlight.js')!!}
+    {!!Html::script('js/bootstrap-switch.js')!!}
+    {!!Html::script('js/main.js')!!}
+
+    <!-- Other -->
+    {!!Html::script('js/delete-reg.js')!!}
 
     @yield('scripts')
     

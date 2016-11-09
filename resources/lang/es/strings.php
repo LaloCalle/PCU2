@@ -32,6 +32,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Alerts Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'congratulations' => 'Felicidades',
+    'alert' => 'Alerta',
+
+    // Users
+    'adduseralert' => 'Usuario agregado correctamente.',
+    'deleteuseralert' => 'Usuario eliminado correctamente.',
+    'edituseralert' => 'Usuario editado correctamente.',
+
+    'permissionsalert' => 'Debes seleccionar al menos un tipo de Permisos.',
+
+    // Match
+    'matchmasterrecord' => 'Ya existe un registro maestro con estos datos.',
+
+    // Register
+    'editregisteralert' => 'Registro editado correctamente',
+
+    /*
+    |--------------------------------------------------------------------------
     | Customer Search Language Lines
     |--------------------------------------------------------------------------
     */
@@ -45,6 +67,7 @@ return [
     'namelastnamesocialreason' => 'Nombre, Apellido o Razón Social',
     'socialreason' => 'Razón Social',
     'namesocialreason' => 'Nombre o Razón Social',
+    'name' => 'Nombre',
     'rfc' => 'RFC',
     'idunique' => 'ID',
     'branch' => 'Sucursal',
@@ -74,7 +97,7 @@ return [
 
     'actions' => 'Acciones',
 
-    'viewbutton' => 'Ver',
+    'view' => 'Ver',
     'documentbutton' => 'Documentar',
 
     /*
@@ -91,7 +114,7 @@ return [
     'description' => 'Descripción',
 
     'addbranch' => 'Agregar Sucursal',
-    'editbutton' => 'Editar',
+    'edit' => 'Editar',
 
     /*
     |--------------------------------------------------------------------------
@@ -100,7 +123,7 @@ return [
     */
 
     'editnote' => 'Edita el registro maestro',
-    'updatebranchbutton' => 'Actualizar',
+    'update' => 'Actualizar',
 
     /*
     |--------------------------------------------------------------------------
@@ -136,8 +159,47 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'deletebutton' => 'Eliminar',
+    'delete' => 'Eliminar',
     'close' => 'Cerrar',
     'add' => 'Agregar',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users List Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'userslist' => 'Lista de Usuarios',
+    'viewlineusers' => 'usuarios',
+    'user' => 'Usuario',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users Create Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'password' => 'Contraseña',
+    'all' => 'Todos',
+    'permissions' => 'Permisos',
+    'superadmin' => 'Super Usuario',
+    'admin' => 'Administrador',
+    'documenter' => 'Documentador',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users View Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'created' => 'Creado',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users Edit Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'editpasswordnote' => 'Recuerda que si deseas conservar la contraseña actual debes dejar el siguiente campo en blanco.',
 
 ];

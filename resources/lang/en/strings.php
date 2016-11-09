@@ -32,6 +32,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Alerts Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'congratulations' => 'Congratulations',
+    'alert' => 'Alert',
+    // Users
+    'adduseralert' => 'User added successfully.',
+    'deleteuseralert' => 'User deleted successfully.',
+    'edituseralert' => 'User edited successfully.',
+
+    'permissionsalert' => 'You must select at least one type of Permits.',
+
+    // Match
+    'matchmasterrecord' => 'There is already a master record with this data.',
+
+    // Register
+    'editregisteralert' => 'Register edited successfully.',
+
+    /*
+    |--------------------------------------------------------------------------
     | Customer Search Language Lines
     |--------------------------------------------------------------------------
     */
@@ -45,6 +66,7 @@ return [
     'namelastnamesocialreason' => 'Name, Last Name or Social Reason',
     'socialreason' => 'Social Reason',
     'namesocialreason' => 'Name or Social Reason',
+    'name' => 'Name',
     'rfc' => 'RFC',
     'idunique' => 'ID',
     'branch' => 'Branch',
@@ -74,7 +96,7 @@ return [
 
     'actions' => 'Actions',
 
-    'viewbutton' => 'View',
+    'view' => 'View',
     'documentbutton' => 'Document',
 
     /*
@@ -91,7 +113,7 @@ return [
     'description' => 'Description',
 
     'addbranch' => 'Add Branch',
-    'editbutton' => 'Edit',
+    'edit' => 'Edit',
 
     /*
     |--------------------------------------------------------------------------
@@ -100,7 +122,7 @@ return [
     */
 
     'editnote' => 'Edit the master record',
-    'updatebranchbutton' => 'Update',
+    'update' => 'Update',
 
     /*
     |--------------------------------------------------------------------------
@@ -136,7 +158,46 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'deletebutton' => 'Delete',
+    'delete' => 'Delete',
     'close' => 'Close',
     'add' => 'Add',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users List Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'userslist' => 'Users List',
+    'viewlineusers' => 'users',
+    'user' => 'User',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users Create Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'password' => 'Password',
+    'all' => 'All',
+    'permissions' => 'Permissions',
+    'superadmin' => 'Super User',
+    'admin' => 'Administrator',
+    'documenter' => 'Documenter',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users View Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'created' => 'Created',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users Edit Language Lines
+    |--------------------------------------------------------------------------
+    */
+
+    'editpasswordnote' => 'Remember that if you want to keep the current password must leave the following field blank.',
 ];
