@@ -20,7 +20,7 @@ $(function() {
                 route = direction+'/match-process';
                 var token = $('#token').val();
                 
-                for(var i = 1; i <= registros; i++){
+                for(var i = 192210; i <= registros; i++){
                         porcentaje = (i*100)/registros;
                         porcentaje = Math.floor(porcentaje);
                         $.ajax({
