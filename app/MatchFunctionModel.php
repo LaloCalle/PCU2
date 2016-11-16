@@ -145,18 +145,103 @@ class MatchFunctionModel extends Model
 		return $indice." - ".$valorprueba;
 	}
 
-	public static function encuentra_ponderacion($registro1, $registro2){
-		// Verifico porcentaje de coincidencia en columna nombre.
-/*
-		$name1 = $registro1->social_reason;
-		$name2 = $registro2->social_reason;
-		if($name1 == "" || $name1 == null && $name2 == "" || $name2 == null){
-			$porcentajename = 100;
-		}else{
-			$porcentajename = self::encuentra_porcentaje($name1, $name2, 0);
-		}
-*/
+	public static function function_match_create($register){
+		$valorprueba = "";
 
+		// Obtengo todos los registros maestros
+		$masters = BranchModel::select('master_tb.social_reason','master_tb.rfc','branch_tb.branch_description','branch_tb.country','branch_tb.city','branch_tb.postal_code','branch_tb.colony','branch_tb.state','branch_tb.street','branch_tb.no_ext','branch_tb.no_int')
+			->join('master_tb','branch_tb.id_master','=','master_tb.id')
+	        ->groupBy('branch_tb.id')
+	        ->get();
+
+		foreach($masters as $master){
+			// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($master) a la función de match para verificar las coincidencias y obtener una ponderación.
+			$result = self::encuentra_ponderacion_create($register, $master);
+
+			// Almaceno el valor devuelto en la variable $valorprueba
+			if($result[0] == "match"){
+				$valorprueba = $result[0];
+			}else if($result[0] == "review"){
+				$valorprueba = $result[0];
+			}else{
+				$result[0] = "nomatch";
+				$valorprueba = $result[0];
+			}
+
+			// Si se encuentra un match termino el foreach
+			if($valorprueba == "match"){
+				break;
+			}
+		}
+
+		return $valorprueba;
+	}
+
+	public static function function_match_create_branch($register){
+		$valorprueba = "";
+
+		// Obtengo todos los registros maestros
+		$masters = BranchModel::select('branch_description','country','city','postal_code','colony','state','street','no_ext','no_int')
+	        ->groupBy('branch_tb.id')
+	        ->get();
+
+		foreach($masters as $master){
+			// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($master) a la función de match para verificar las coincidencias y obtener una ponderación.
+			$result = self::encuentra_ponderacion_create_branch($register, $master);
+
+			// Almaceno el valor devuelto en la variable $valorprueba
+			if($result[0] == "match"){
+				$valorprueba = $result[0];
+			}else if($result[0] == "review"){
+				$valorprueba = $result[0];
+			}else{
+				$result[0] = "nomatch";
+				$valorprueba = $result[0];
+			}
+
+			// Si se encuentra un match termino el foreach
+			if($valorprueba == "match"){
+				break;
+			}
+		}
+
+		return $valorprueba;
+	}
+
+	public static function function_match_update($register){
+		$valorprueba = "";
+
+		// Obtengo todos los registros maestros
+		$masters = BranchModel::select('master_tb.social_reason','master_tb.rfc','branch_tb.branch_description','branch_tb.country','branch_tb.city','branch_tb.postal_code','branch_tb.colony','branch_tb.state','branch_tb.street','branch_tb.no_ext','branch_tb.no_int')
+			->where('branch_tb.id','!=',$register->id_branch)
+			->join('master_tb','branch_tb.id_master','=','master_tb.id')
+	        ->groupBy('branch_tb.id')
+	        ->get();
+
+		foreach($masters as $master){
+			// Envío el registro que estamos procesando ($register) y el registro en el que nos encontramos del recorrido ($master) a la función de match para verificar las coincidencias y obtener una ponderación.
+			$result = self::encuentra_ponderacion_create($register, $master);
+
+			// Almaceno el valor devuelto en la variable $valorprueba
+			if($result[0] == "match"){
+				$valorprueba = $result[0];
+			}else if($result[0] == "review"){
+				$valorprueba = $result[0];
+			}else{
+				$result[0] = "nomatch";
+				$valorprueba = $result[0];
+			}
+
+			// Si se encuentra un match termino el foreach
+			if($valorprueba == "match"){
+				break;
+			}
+		}
+
+		return $valorprueba;
+	}
+
+	public static function encuentra_ponderacion($registro1, $registro2){
 		// Verifico porcentaje de coincidencia en columna rfc.
 		$rfc1 = $registro1->rfc;
 		$rfc2 = $registro2->rfc;
@@ -169,30 +254,16 @@ class MatchFunctionModel extends Model
 		/***** Función de ponderación *****/
 		$puntajemaximo = 5;
 		// porcentaje para cada elemento en decimales
-//		$valorname = 0.20;
 		$valorrfc = 1;
 
 		// Obtenemos puntaje obtenido en cada elemento
-/*
-		if($porcentajename > 0){
-			$porcentajename = (($porcentajename * $puntajemaximo) / 100) * $valorname;
-		}
-*/
 		if($porcentajerfc > 0){
 			$porcentajerfc = (($porcentajerfc * $puntajemaximo) / 100) * $valorrfc;
 		}
 		
 		// Obtenemos el ponderaje total del registro maestro.
-/*
-		if($porcentajename == 1){
-			$valortotal = 4;
-		}else{
-*/
-			//$valortotal = $porcentajename + $porcentajerfc;
-			$valortotal = $porcentajerfc;
-/*
-		}
-*/
+		$valortotal = $porcentajerfc;
+
 		/***** Fin función de ponderación *****/
 
 		//verifica dentro de que rango se encuentra este registro y regreso el valor match, review o nomatch
@@ -204,7 +275,137 @@ class MatchFunctionModel extends Model
 			$valor_match[0] = 'nomatch';
 		}
 
-		$valor_match[1] = /* $name2." -> ".$name1." = ".$porcentajename." - ".*/ $rfc2." -> ".$rfc1." = ".$porcentajerfc." => ".$valortotal;
+		$valor_match[1] = $rfc2." -> ".$rfc1." = ".$porcentajerfc." => ".$valortotal;
+		return $valor_match;
+	}
+
+	public static function encuentra_ponderacion_create($registro1, $registro2){
+		// Verifico porcentaje de coincidencia en columna social_reason.
+		$name1 = $registro1->social_reason;
+		$name2 = $registro2->social_reason;
+		if(($name1 == "" || $name1 == null) && ($name2 == "" || $name2 == null)){
+			$porcentajename = 100;
+		}else{
+			$porcentajename = self::encuentra_porcentaje($name1, $name2, 0);
+		}
+
+		// Verifico porcentaje de coincidencia en columna rfc.
+		$rfc1 = $registro1->rfc;
+		$rfc2 = $registro2->rfc;
+		if(($rfc1 == "" || $rfc1 == null) && ($rfc2 == "" || $rfc2 == null)){
+			$porcentajerfc = 100;
+		}else{
+			$porcentajerfc = self::encuentra_porcentaje($rfc1, $rfc2, 1);
+		}
+
+		// Verifico porcentaje de coincidencia en columna branch_description.
+		$branch1 = $registro1->branch_description;
+		$branch2 = $registro2->branch_description;
+		if(($branch1 == "" || $branch1 == null) && ($branch2 == "" || $branch2 == null)){
+			$porcentajebranch = 100;
+		}else{
+			$porcentajebranch = self::encuentra_porcentaje($branch1, $branch2, 0);
+		}
+
+		// Verifico porcentaje de coincidencia en columna address.
+		$address1 = $registro1->country." ".$registro1->city." ".$registro1->postal_code." ".$registro1->colony." ".$registro1->state." ".$registro1->street." ".$registro1->no_ext." ".$registro1->no_int;
+		$address2 = $registro2->country." ".$registro2->city." ".$registro2->postal_code." ".$registro2->colony." ".$registro2->state." ".$registro2->street." ".$registro2->no_ext." ".$registro2->no_int;
+		if(($address1 == "" || $address1 == null) && ($address2 == "" || $address2 == null)){
+			$porcentajeaddress = 100;
+		}else{
+			$porcentajeaddress = self::encuentra_porcentaje($address1, $address2, 0);
+		}
+
+		/***** Función de ponderación *****/
+		$puntajemaximo = 5;
+		// porcentaje para cada elemento en decimales
+		$valorname = 0.20;
+		$valorrfc = 0.40;
+		$valorbranch = 0.20;
+		$valoraddress = 0.20;
+
+		// Obtenemos puntaje obtenido en cada elemento
+		if($porcentajename > 0){
+			$porcentajename = (($porcentajename * $puntajemaximo) / 100) * $valorname;
+		}
+		if($porcentajerfc > 0){
+			$porcentajerfc = (($porcentajerfc * $puntajemaximo) / 100) * $valorrfc;
+		}
+		if($porcentajebranch > 0){
+			$porcentajebranch = (($porcentajebranch * $puntajemaximo) / 100) * $valorbranch;
+		}
+		if($porcentajeaddress > 0){
+			$porcentajeaddress = (($porcentajeaddress * $puntajemaximo) / 100) * $valoraddress;
+		}
+		
+		// Obtenemos el ponderaje total del registro maestro.
+		if($porcentajename == 1){
+			$valortotal = 5;
+		}else{
+			$valortotal = $porcentajename + $porcentajerfc + $porcentajebranch + $porcentajeaddress;
+		}
+		/***** Fin función de ponderación *****/
+
+		//verifica dentro de que rango se encuentra este registro y regreso el valor match, review o nomatch
+		if($valortotal >= 4){
+			$valor_match[0] = 'match';
+		}else if($valortotal >= 1.5 && $valortotal < 4){
+			$valor_match[0] = 'review';
+		}else{
+			$valor_match[0] = 'nomatch';
+		}
+
+		$valor_match[1] = $name2." -> ".$name1." = ".$porcentajename." - ".$rfc2." -> ".$rfc1." = ".$porcentajerfc." - ".$branch2." -> ".$branch1." = ".$porcentajebranch." => ".$valortotal;
+		return $valor_match;
+	}
+
+	public static function encuentra_ponderacion_create_branch($registro1, $registro2){
+		// Verifico porcentaje de coincidencia en columna branch_description.
+		$branch1 = $registro1->branch_description;
+		$branch2 = $registro2->branch_description;
+		if(($branch1 == "" || $branch1 == null) && ($branch2 == "" || $branch2 == null)){
+			$porcentajebranch = 100;
+		}else{
+			$porcentajebranch = self::encuentra_porcentaje($branch1, $branch2, 0);
+		}
+
+		// Verifico porcentaje de coincidencia en columna address.
+		$address1 = $registro1->country." ".$registro1->city." ".$registro1->postal_code." ".$registro1->colony." ".$registro1->state." ".$registro1->street." ".$registro1->no_ext." ".$registro1->no_int;
+		$address2 = $registro2->country." ".$registro2->city." ".$registro2->postal_code." ".$registro2->colony." ".$registro2->state." ".$registro2->street." ".$registro2->no_ext." ".$registro2->no_int;
+		if(($address1 == "" || $address1 == null) && ($address2 == "" || $address2 == null)){
+			$porcentajeaddress = 100;
+		}else{
+			$porcentajeaddress = self::encuentra_porcentaje($address1, $address2, 0);
+		}
+
+		/***** Función de ponderación *****/
+		$puntajemaximo = 5;
+		// porcentaje para cada elemento en decimales
+		$valorbranch = 0.70;
+		$valoraddress = 0.30;
+
+		// Obtenemos puntaje obtenido en cada elemento
+		if($porcentajebranch > 0){
+			$porcentajebranch = (($porcentajebranch * $puntajemaximo) / 100) * $valorbranch;
+		}
+		if($porcentajeaddress > 0){
+			$porcentajeaddress = (($porcentajeaddress * $puntajemaximo) / 100) * $valoraddress;
+		}
+		
+		// Obtenemos el ponderaje total del registro maestro.
+		$valortotal = $porcentajebranch + $porcentajeaddress;
+		/***** Fin función de ponderación *****/
+
+		//verifica dentro de que rango se encuentra este registro y regreso el valor match, review o nomatch
+		if($valortotal >= 4){
+			$valor_match[0] = 'match';
+		}else if($valortotal >= 1.5 && $valortotal < 4){
+			$valor_match[0] = 'review';
+		}else{
+			$valor_match[0] = 'nomatch';
+		}
+
+		$valor_match[1] = $branch2." -> ".$branch1." = ".$porcentajebranch." => ".$valortotal;
 		return $valor_match;
 	}
 
@@ -363,7 +564,6 @@ class MatchFunctionModel extends Model
 		return $cadenaoriginal;
 	}
 
-	// Función para eliminar las diferencias por caracteres especiales y acentos.
 	public static function sanear_string($string){
 	    $string = trim($string);
 	    $string = str_replace(

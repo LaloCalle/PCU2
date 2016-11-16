@@ -13,6 +13,12 @@ $(function() {
     $( "#search-rfc" ).keyup(function() {
     	searchFilter();
 	});
+    $( "#search-id-unique-customer" ).keyup(function() {
+        searchFilter();
+    });
+    $( "#search-branch-description" ).keyup(function() {
+        searchFilter();
+    });
     $( "#search-contact" ).keyup(function() {
         searchFilter();
     });
@@ -45,6 +51,8 @@ $(function() {
 function searchFilter(){
 	var name = $( "#search-name" ).val();
 	var rfc = $( "#search-rfc" ).val();
+    var iduniquecustomer = $( "#search-id-unique-customer" ).val();
+    var branchdescription = $( "#search-branch-description" ).val();
     var contact = $( "#search-contact" ).val();
     var country = $( "#search-country" ).val();
     var city = $( "#search-city" ).val();
@@ -55,7 +63,7 @@ function searchFilter(){
     var noext = $( "#search-no-ext" ).val();
     var noint = $( "#search-no-int" ).val();
 
-    var route = direction+'/?name='+name+'&rfc='+rfc+'&contact='+contact+'&country='+country+'&city='+city+'&state='+state+'&postalcode='+postalcode+'&colony='+colony+'&street='+street+'&noext='+noext+'&noint='+noint;
+    var route = direction+'/customer-search?name='+name+'&rfc='+rfc+'&iduniquecustomer='+iduniquecustomer+'&branchdescription='+branchdescription+'&contact='+contact+'&country='+country+'&city='+city+'&state='+state+'&postalcode='+postalcode+'&colony='+colony+'&street='+street+'&noext='+noext+'&noint='+noint;
     $.ajax({
         type: 'GET',
         url: route,

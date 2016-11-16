@@ -11,6 +11,10 @@ use PCU\PostalCodesMXModel;
 
 class DynamicListsController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     public function cities(Request $request, $code){
         if($request->ajax()){
             $cities = CityCatalogueModel::cities($code);
@@ -39,7 +43,7 @@ class DynamicListsController extends Controller
      */
     public function index()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -49,7 +53,7 @@ class DynamicListsController extends Controller
      */
     public function create()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -60,7 +64,7 @@ class DynamicListsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -71,7 +75,7 @@ class DynamicListsController extends Controller
      */
     public function show($id)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -82,7 +86,7 @@ class DynamicListsController extends Controller
      */
     public function edit($id)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -94,7 +98,7 @@ class DynamicListsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        abort(400);
     }
 
     /**
@@ -105,6 +109,6 @@ class DynamicListsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(400);
     }
 }

@@ -5,6 +5,8 @@ namespace PCU\Http\Controllers;
 use Illuminate\Http\Request;
 
 use PCU\Http\Requests;
+use PCU\Http\Requests\CreateBranchRequest;
+use PCU\Http\Requests\EditMasterRecordRequest;
 use PCU\Http\Controllers\Controller;
 use PCU\MasterModel;
 use PCU\BranchModel;
@@ -15,9 +17,27 @@ use PCU\MatchFunctionModel;
 use Illuminate\Support\Facades\DB;
 use Response;
 use Session;
+use Illuminate\Routing\Route;
 
 class PossibleMatchController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+        $this->middleware('admin');
+        $this->beforeFilter('@find',['only'=>['show','edit','update','destroy']]);
+        $this->beforeFilter('@findLink',['only'=>['link']]);
+    }
+
+    public function find(Route $route){
+        $this->branch = BranchModel::find($route->getParameter('possible_match'));
+        $this->notFound($this->branch);
+    }
+
+    public function findLink(Route $route){
+        $this->master = MasterModel::find($route->getParameter('id'));
+        $this->notFound($this->master);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,12 +62,7 @@ class PossibleMatchController extends Controller
                 $masters = $masters->where('branch_tb.status_match',$request->orderbystatus);
             }
         }
-        $masters = $masters->whereExists(function ($query) {
-            $query->select(DB::raw(1))
-                  ->from('match_tb')
-                  ->whereRaw('match_tb.id_master = master_tb.id');
-        })
-        ->orderby('master_tb.social_reason')
+        $masters = $masters->orderby('master_tb.social_reason')
         ->groupBy('branch_tb.id')
         ->paginate(25);
 
@@ -65,7 +80,7 @@ class PossibleMatchController extends Controller
      */
     public function create()
     {
-        //
+        abort(400);
     }
 
     /**
@@ -74,49 +89,59 @@ class PossibleMatchController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateBranchRequest $request)
     {
-        $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
+        // Aquí puedo hacer la validación de match y si los campos no entran en match entonces hará el add
+        $status_match = MatchFunctionModel::function_match_create_branch($request);
 
-        $branch = BranchModel::create([
-                'id_master' => $request->id_master,
-                'branch_description' => $request->branch_description,
-                'country' => $request->country,
-                'state' => $request->state,
-                'city' => $request->city,
-                'street' => $request->street,
-                'no_int' => $request->no_int,
-                'no_ext' => $request->no_ext,
-                'colony' => $request->colony,
-                'postal_code' => $request->postal_code,
-                'status_match' => 'match',
-                'id_unique_customer' => $request->id_unique_customer,
+        if($status_match == "match"){
+            return response()->json([
+                "mensaje" => "Match",
+                "alerta" => trans('strings.matchmasterrecord'),
             ]);
+        }else{
+            $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
 
-        ContactModel::create([
-                'id_branch' => $branch->id,
-                'type' => 'email',
-                'description' => $request->email,
-            ]);
-        ContactModel::create([
-                'id_branch' => $branch->id,
-                'type' => 'phone',
-                'description' => $request->phone,
-            ]);
-        ContactModel::create([
-                'id_branch' => $branch->id,
-                'type' => 'mobile',
-                'description' => $request->mobile,
-            ]);
-        ContactModel::create([
-                'id_branch' => $branch->id,
-                'type' => 'other',
-                'description' => $request->other,
-            ]);
+            $branch = BranchModel::create([
+                    'id_master' => $request->id_master,
+                    'branch_description' => $request->branch_description,
+                    'country' => $request->country,
+                    'state' => $request->state,
+                    'city' => $request->city,
+                    'street' => $request->street,
+                    'no_int' => $request->no_int,
+                    'no_ext' => $request->no_ext,
+                    'colony' => $request->colony,
+                    'postal_code' => $request->postal_code,
+                    'status_match' => 'match',
+                    'id_unique_customer' => $request->id_unique_customer,
+                ]);
 
-        return response()->json([
-            "mensaje" => "Link"
-        ]);
+            ContactModel::create([
+                    'id_branch' => $branch->id,
+                    'type' => 'email',
+                    'description' => $request->email,
+                ]);
+            ContactModel::create([
+                    'id_branch' => $branch->id,
+                    'type' => 'phone',
+                    'description' => $request->phone,
+                ]);
+            ContactModel::create([
+                    'id_branch' => $branch->id,
+                    'type' => 'mobile',
+                    'description' => $request->mobile,
+                ]);
+            ContactModel::create([
+                    'id_branch' => $branch->id,
+                    'type' => 'other',
+                    'description' => $request->other,
+                ]);
+
+            return response()->json([
+                "mensaje" => "Link"
+            ]);
+        }
     }
 
     /**
@@ -128,7 +153,7 @@ class PossibleMatchController extends Controller
     public function show($id)
     {
         $contacts = ContactModel::where('id_branch',$id)->get();
-        $branch = BranchModel::where('id',$id)->first();
+        $branch = $this->branch;
         $master = MasterModel::where('id',$branch->id_master)->first();
 
         foreach($contacts as $contact){
@@ -184,7 +209,7 @@ class PossibleMatchController extends Controller
     public function edit($id)
     {
         $contacts = ContactModel::where('id_branch',$id)->get();
-        $branch = BranchModel::where('id',$id)->first();
+        $branch = $this->branch;
         $master = MasterModel::where('id',$branch->id_master)->first();
 
         $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
@@ -242,74 +267,82 @@ class PossibleMatchController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EditMasterRecordRequest $request, $id)
     {
-        DB::table('master_tb')->where('id',$request->id_master)->update(['social_reason'=>$request->social_reason,'rfc'=>$request->rfc]);
+        // Aquí puedo hacer la validación de match y si los campos no entran en match entonces hará el add
+        $status_match = MatchFunctionModel::function_match_update($request);
 
-        // Aquí debe ir una función para crear el id de cliente único.
-        /*
-         * El id se forma de 13 caracteres:
-         * 5 letras del nombre del cliente.
-         * 2 letras del código del país.
-         * 3 letras del código de ciudad.
-         * 3 letras del código de sucursal.
-        */
-
-        if(strlen($request->id_unique_customer) != 13){
-            $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
-        }
-
-        DB::table('branch_tb')->where('id',$request->id_branch)->update(['id_unique_customer'=>$request->id_unique_customer,'branch_description'=>$request->branch_description,'country'=>$request->country,'city'=>$request->city,'postal_code'=>$request->postal_code,'colony'=>$request->colony,'state'=>$request->state,'street'=>$request->street,'no_ext'=>$request->no_ext,'no_int'=>$request->no_int]);
-
-        $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->count();
-        if($count == 1){
-            DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->update(['description'=>$request->email]);
+        if($status_match == "match"){
+            return response()->json([
+                "mensaje" => "Match",
+                "alerta" => trans('strings.matchmasterrecord'),
+            ]);
         }else{
-            DB::table('contact_tb')->insert(
-                    ['id_branch' => $request->id_branch, 'type' => 'email', 'description' => $request->email, 'name_contact' => '']
-                );
-        }
-        $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->count();
-        if($count == 1){
-            DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->update(['description'=>$request->phone]);
-        }else{
-            DB::table('contact_tb')->insert(
-                    ['id_branch' => $request->id_branch, 'type' => 'phone', 'description' => $request->phone, 'name_contact' => '']
-                );
-        }
-        $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->count();
-        if($count == 1){
-            DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->update(['description'=>$request->mobile]);
-        }else{
-            DB::table('contact_tb')->insert(
-                    ['id_branch' => $request->id_branch, 'type' => 'mobile', 'description' => $request->mobile, 'name_contact' => '']
-                );
-        }
-        $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->count();
-        if($count == 1){
-            DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->update(['description'=>$request->other]);
-        }else{
-            DB::table('contact_tb')->insert(
-                    ['id_branch' => $request->id_branch, 'type' => 'other', 'description' => $request->other, 'name_contact' => '']
-                );
-        }
+            DB::table('master_tb')->where('id',$request->id_master)->update(['social_reason'=>$request->social_reason,'rfc'=>$request->rfc]);
 
-        Session::flash('message-success','Registro editado correctamente.');
+            // Aquí debe ir una función para crear el id de cliente único.
+            /*
+             * El id se forma de 13 caracteres:
+             * 5 letras del nombre del cliente.
+             * 2 letras del código del país.
+             * 3 letras del código de ciudad.
+             * 3 letras del código de sucursal.
+            */
 
-        return response()->json([
-            "mensaje" => "Complete"
-        ]);
+            if(strlen($request->id_unique_customer) != 13){
+                $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
+            }
+
+            DB::table('branch_tb')->where('id',$request->id_branch)->update(['id_unique_customer'=>$request->id_unique_customer,'branch_description'=>$request->branch_description,'country'=>$request->country,'city'=>$request->city,'postal_code'=>$request->postal_code,'colony'=>$request->colony,'state'=>$request->state,'street'=>$request->street,'no_ext'=>$request->no_ext,'no_int'=>$request->no_int]);
+
+            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->count();
+            if($count == 1){
+                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->update(['description'=>$request->email]);
+            }else{
+                DB::table('contact_tb')->insert(
+                        ['id_branch' => $request->id_branch, 'type' => 'email', 'description' => $request->email, 'name_contact' => '']
+                    );
+            }
+            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->count();
+            if($count == 1){
+                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->update(['description'=>$request->phone]);
+            }else{
+                DB::table('contact_tb')->insert(
+                        ['id_branch' => $request->id_branch, 'type' => 'phone', 'description' => $request->phone, 'name_contact' => '']
+                    );
+            }
+            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->count();
+            if($count == 1){
+                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->update(['description'=>$request->mobile]);
+            }else{
+                DB::table('contact_tb')->insert(
+                        ['id_branch' => $request->id_branch, 'type' => 'mobile', 'description' => $request->mobile, 'name_contact' => '']
+                    );
+            }
+            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->count();
+            if($count == 1){
+                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->update(['description'=>$request->other]);
+            }else{
+                DB::table('contact_tb')->insert(
+                        ['id_branch' => $request->id_branch, 'type' => 'other', 'description' => $request->other, 'name_contact' => '']
+                    );
+            }
+
+            Session::flash('message-success',trans('strings.editregisteralert'));
+
+            return response()->json([
+                "mensaje" => "Complete"
+            ]);
+        }
     }
 
     public function link($id)
     {
-        $master = MasterModel::where('id',$id)->first();
+        $master = $this->master;
         $branches = BranchModel::where('id_master',$id)->orderby('branch_description')->get();
 
         $countries = CountryCatalogueModel::orderBy('name')->lists('name','code');
         $cities = CityCatalogueModel::orderBy('name')->lists('name','code');
-
-        Session::flash('message-success','Registro de Sucursal correcto.');
 
         return view('possible-match.link',compact('master','branches','countries','cities'));
     }
@@ -322,6 +355,6 @@ class PossibleMatchController extends Controller
      */
     public function destroy($id)
     {
-        //
+        abort(400);
     }
 }

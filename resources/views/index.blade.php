@@ -3,55 +3,63 @@
 @section('content')
 	<div class="row">
 		<div class="col-md-12 text-center">
-	    	<h2 class="title">¡Bienvenido!</h2>
-	    	<h4 class="subtitle">Realiza una búsqueda para encontrar los datos y el historial de tu cliente</h4>
-	    	<p>Recuerda que si tu cliente es nuevo, deberás realizar el registro completo</p>
+	    	<h2 class="title">¡{{ trans('strings.welcome') }}!</h2>
+	    	<h4 class="subtitle">{{ trans('strings.welcomesubtitle') }}</h4>
+	    	<p>{{ trans('strings.welcomesubtitlenote') }}</p>
 	    </div>
 	</div>
 	<div class="row">
 	    <div class="col-md-12">
-	    	<h4 class="subtitle">Customer Search</h4>
-	    	<p>Utiliza los filtros para encontrar al cliente con mayor facilidad</p>
+	    	<h4 class="subtitle">{{ trans('strings.customersearch') }}</h4>
+	    	<p>{{ trans('strings.filtersnote') }}</p>
 	    </div>
 	    <div class="col-md-12">
 	    	{!! Form::model(Request::all()) !!}
 		    	<div class="row">
-		    		<div class="form-group col-md-4">
-		    			{!! Form::text('name', null, ['id' => 'search-name', 'class' => 'form-control', 'placeholder' => 'Nombre, Apellido o Razón Social']) !!}
+		    		<div class="form-group col-md-6">
+		    			{!! Form::text('name', null, ['id' => 'search-name', 'class' => 'form-control', 'placeholder' => trans('strings.namelastnamesocialreason')]) !!}
 		    		</div>
-		    		<div class="form-group col-md-4">
-		    			{!! Form::text('rfc', null, ['id' => 'search-rfc', 'class' => 'form-control', 'placeholder' => 'RFC']) !!}
-		    		</div>
-		    		<div class="form-group col-md-4">
-		    			{!! Form::text('contact', null, ['id' => 'search-contact', 'class' => 'form-control', 'placeholder' => 'Teléfono, Móvil o Correo Electrónico']) !!}
-		    		</div>
-		    	</div>
-		    	<div class="row">
-		    		<div class="form-group col-md-3">
-		    			{!! Form::text('country', null, ['id' => 'search-country', 'class' => 'form-control', 'placeholder' => 'País']) !!}
-		    		</div>
-		    		<div class="form-group col-md-3">
-		    			{!! Form::text('city', null, ['id' => 'search-city', 'class' => 'form-control', 'placeholder' => 'Ciudad']) !!}
-		    		</div>
-		    		<div class="form-group col-md-3">
-		    			{!! Form::text('state', null, ['id' => 'search-state', 'class' => 'form-control', 'placeholder' => 'Estado']) !!}
-		    		</div>
-		    		<div class="form-group col-md-3">
-		    			{!! Form::text('postal_code', null, ['id' => 'search-postal-code', 'class' => 'form-control', 'placeholder' => 'Código Postal']) !!}
+		    		<div class="form-group col-md-6">
+		    			{!! Form::text('rfc', null, ['id' => 'search-rfc', 'class' => 'form-control', 'placeholder' => trans('strings.rfc')]) !!}
 		    		</div>
 		    	</div>
 		    	<div class="row">
 		    		<div class="form-group col-md-4">
-		    			{!! Form::text('colony', null, ['id' => 'search-colony', 'class' => 'form-control', 'placeholder' => 'Colonia']) !!}
+		    			{!! Form::text('id_unique_customer', null, ['id' => 'search-id-unique-customer', 'class' => 'form-control', 'placeholder' => trans('strings.idunique')]) !!}
 		    		</div>
 		    		<div class="form-group col-md-4">
-		    			{!! Form::text('street', null, ['id' => 'search-street', 'class' => 'form-control', 'placeholder' => 'Calle']) !!}
+		    			{!! Form::text('branch_description', null, ['id' => 'search-branch-description', 'class' => 'form-control', 'placeholder' => trans('strings.branch')]) !!}
+		    		</div>
+		    		<div class="form-group col-md-4">
+		    			{!! Form::text('contact', null, ['id' => 'search-contact', 'class' => 'form-control', 'placeholder' => trans('strings.phonemobileemail')]) !!}
+		    		</div>
+		    	</div>
+		    	<div class="row">
+		    		<div class="form-group col-md-3">
+		    			{!! Form::text('country', null, ['id' => 'search-country', 'class' => 'form-control', 'placeholder' => trans('strings.country')]) !!}
+		    		</div>
+		    		<div class="form-group col-md-3">
+		    			{!! Form::text('city', null, ['id' => 'search-city', 'class' => 'form-control', 'placeholder' => trans('strings.city')]) !!}
+		    		</div>
+		    		<div class="form-group col-md-3">
+		    			{!! Form::text('state', null, ['id' => 'search-state', 'class' => 'form-control', 'placeholder' => trans('strings.state')]) !!}
+		    		</div>
+		    		<div class="form-group col-md-3">
+		    			{!! Form::text('postal_code', null, ['id' => 'search-postal-code', 'class' => 'form-control', 'placeholder' => trans('strings.postalcode')]) !!}
+		    		</div>
+		    	</div>
+		    	<div class="row">
+		    		<div class="form-group col-md-4">
+		    			{!! Form::text('colony', null, ['id' => 'search-colony', 'class' => 'form-control', 'placeholder' => trans('strings.colony')]) !!}
+		    		</div>
+		    		<div class="form-group col-md-4">
+		    			{!! Form::text('street', null, ['id' => 'search-street', 'class' => 'form-control', 'placeholder' => trans('strings.street')]) !!}
 		    		</div>
 		    		<div class="form-group col-sm-6 col-md-2">
-		    			{!! Form::text('no_ext', null, ['id' => 'search-no-ext', 'class' => 'form-control', 'placeholder' => 'No. Exterior']) !!}
+		    			{!! Form::text('no_ext', null, ['id' => 'search-no-ext', 'class' => 'form-control', 'placeholder' => trans('strings.noext')]) !!}
 		    		</div>
 		    		<div class="form-group col-sm-6 col-md-2">
-		    			{!! Form::text('no_int', null, ['id' => 'search-no-int', 'class' => 'form-control', 'placeholder' => 'No. Interior']) !!}
+		    			{!! Form::text('no_int', null, ['id' => 'search-no-int', 'class' => 'form-control', 'placeholder' => trans('strings.noint')]) !!}
 		    		</div>
 		    	</div>
 	    	{!! Form::close() !!}
@@ -61,8 +69,8 @@
 @section('table-result')
 		<div class="row">
 			<div class="col-md-3">
-	    		<h4 class="subtitle">Coincidencias encontradas</h4>
-	    		<p class="float-left">Viendo {!! $masters->firstItem() !!} a {!! $masters->lastItem() !!} de {!! $masters->total() !!} clientes</p>
+	    		<h4 class="subtitle">{{ trans('strings.matchesfound') }}</h4>
+	    		<p class="float-left">{{ trans('strings.viewlineview') }} {!! $masters->firstItem() !!} {{ trans('strings.viewlineto') }} {!! $masters->lastItem() !!} {{ trans('strings.viewlineof') }} {!! $masters->total() !!} {{ trans('strings.viewlinecustomers') }}</p>
 	    	</div>
 			<div class="col-md-9 text-right">
 		    	{!! $masters->render() !!}
@@ -72,11 +80,11 @@
 			        <table class="table table-striped table-hover">
 				        <thead>
 				            <tr>
-				                <th class="text-center">ID</th>
-				                <th class="text-center">Razón Social</th>
-				                <th class="text-center">RFC</th>
-				                <th class="text-center">Sucursal</th>
-				                <th class="text-center">Acciones</th>
+				                <th class="text-center">{{ trans('strings.idunique') }}</th>
+				                <th class="text-center">{{ trans('strings.socialreason') }}</th>
+				                <th class="text-center">{{ trans('strings.rfc') }}</th>
+				                <th class="text-center">{{ trans('strings.branch') }}</th>
+				                <th class="text-center">{{ trans('strings.actions') }}</th>
 				            </tr>
 				        </thead>
 				        <tbody>
@@ -87,8 +95,10 @@
 					        		<td class="text-center">{!! $master->rfc !!}</td>
 					        		<td class="text-center">{!! $master->branch_description !!}</td>
 					        		<td class="text-center" style="min-width: 250px;">
-					        			{!!link_to_route('master-record.show', $title = "Ver", $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
-					        			{!! link_to('/', $title = 'Documentar', $parameters = ['class'=>'btn btn-primary'], $attributes = []) !!}
+					        			{!!link_to_route('master-record.show', $title = trans('strings.view'), $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
+					        			@if(Auth::user()->p_document == 1)
+					        				{!! link_to('/', $title = trans('strings.documentbutton'), $parameters = ['class'=>'btn btn-primary'], $attributes = []) !!}
+					        			@endif
 					        		</td>
 					        	</tr>
 							@endforeach
