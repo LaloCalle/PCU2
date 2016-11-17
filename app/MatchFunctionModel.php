@@ -14,6 +14,26 @@ use Illuminate\Support\Facades\DB;
 class MatchFunctionModel extends Model
 {
 	public static function function_match($indice){
+		$controlador = 0;
+		$branch = BranchModel::where('id',$indice)->first();
+		if(strlen($branch->id_unique_customer) != 13){
+			$master = MasterModel::where('id',$branch->id_master)->first();
+
+			if($branch->branch_description == "" || $branch->branch_description == null){
+				$branch->branch_description = "Sucursal";
+		    }
+
+		    $id_unique_customer = Controller::getIdUnique($master->social_reason, $branch->country, $branch->city, $branch->branch_description);
+
+		    DB::table('branch_tb')->where('id',$indice)->update(['id_unique_customer'=>$id_unique_customer]);
+
+		    return $indice." - ".$id_unique_customer;
+		}else{
+			return $indice." - ".$branch->id_unique_customer;
+		}
+	}
+
+	public static function function_match_bak($indice){
 		// Obtengo el registro con el que se trabajará por medio del indice obtenido ($indice)
 		$register = CustomerModel::where('id',$indice)->first();
 		$valorprueba = "";

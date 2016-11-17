@@ -56,54 +56,49 @@ abstract class Controller extends BaseController
         }
 
         // Obtengo las 2 letras del país
-        $code_country = $country;
+        $code_country = substr($country, 0, 2);
 
         // Obtengo las 3 letras de la ciudad
-        $code_city = $city;
+        $code_city = substr($city, 0, 3);
 
         // Obtengo las 3 letras de la sucursal
-        if($branch_description != "" || $branch_description != null){
-            $code_branch_tokens = explode(' ',$branch_description);
-            $count = count($code_branch_tokens);
-            $code_branch = "";
-            if($count == 1){
-                $code_branch = substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[0])), 0, 3);
-            }else if($count == 2){
-                $code_branch = substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[0])), 0, 2);
-                $code_branch .= substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[1])), 0, 1);
-            }else{
-                $code_branch = substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[0])), 0, 1);
-                $code_branch .= substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[1])), 0, 1);
-                $code_branch .= substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[2])), 0, 1);
-            }
-
-            if(strlen($code_branch) < 3){
-                $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 3);
-                $code_branch .= $aleatory_string;
-
-                $code_branch = substr($code_branch, 0, 3);
-            }
-
-            //Genero el id de cliente único
-            $id_unique_customer = $code_name.$code_country.$code_city.$code_branch;
-            $id_unique_customer = strtoupper($id_unique_customer);
-
-            $controller = 0;
-            while($controller == 0){
-                $controller_id_count = BranchModel::where('id_unique_customer',$id_unique_customer)->count();
-                if($controller_id_count <= 0){
-                    $controller = 1;
-                }else{
-                    $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 1);
-
-                    $code_branch = substr($code_branch, 0, -1).$aleatory_string;
-                    $id_unique_customer = $code_name.$code_country.$code_city.$code_branch;
-                    $id_unique_customer = strtoupper($id_unique_customer);
-                }
-            }
+        $code_branch_tokens = explode(' ',$branch_description);
+        $count = count($code_branch_tokens);
+        $code_branch = "";
+        if($count == 1){
+            $code_branch = substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[0])), 0, 3);
+        }else if($count == 2){
+            $code_branch = substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[0])), 0, 2);
+            $code_branch .= substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[1])), 0, 1);
         }else{
-            $id_unique_customer = $code_name.$code_country.$code_city;
-            $id_unique_customer = strtoupper($id_unique_customer);
+            $code_branch = substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[0])), 0, 1);
+            $code_branch .= substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[1])), 0, 1);
+            $code_branch .= substr(str_replace([' ','  ','   ','    ','     '],'',MatchFunctionModel::sanear_string($code_branch_tokens[2])), 0, 1);
+        }
+
+        if(strlen($code_branch) < 3){
+            $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 3);
+            $code_branch .= $aleatory_string;
+
+            $code_branch = substr($code_branch, 0, 3);
+        }
+
+        //Genero el id de cliente único
+        $id_unique_customer = $code_name.$code_country.$code_city.$code_branch;
+        $id_unique_customer = strtoupper($id_unique_customer);
+
+        $controller = 0;
+        while($controller == 0){
+            $controller_id_count = BranchModel::where('id_unique_customer',$id_unique_customer)->count();
+            if($controller_id_count <= 0){
+                $controller = 1;
+            }else{
+                $aleatory_string = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 3);
+
+                $code_branch = substr($code_branch, 0, -3).$aleatory_string;
+                $id_unique_customer = $code_name.$code_country.$code_city.$code_branch;
+                $id_unique_customer = strtoupper($id_unique_customer);
+            }
         }
 
         return $id_unique_customer;

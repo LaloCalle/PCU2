@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use PCU\Http\Requests;
 use PCU\Http\Controllers\Controller;
 use PCU\CustomerModel;
+use PCU\MasterModel;
 use Maatwebsite\Excel\Facades\Excel;
 use PCU\MatchFunctionModel;
 
@@ -247,7 +248,7 @@ class ExtractMatchController extends Controller
         });
 */
 
-        $num_customers = CustomerModel::count();
+        $num_customers = MasterModel::count();
         
         return response()->json([
                 "totalRegistros" => $num_customers
