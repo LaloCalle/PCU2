@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class MatchFunctionModel extends Model
 {
+	// Función para asignarle el ID único en todos los registros, este proceso ya esta realizado.
+	/*
 	public static function function_match($indice){
 		$controlador = 0;
 		$branch = BranchModel::where('id',$indice)->first();
@@ -32,8 +34,9 @@ class MatchFunctionModel extends Model
 			return $indice." - ".$branch->id_unique_customer;
 		}
 	}
+	*/
 
-	public static function function_match_bak($indice){
+	public static function function_match($indice){
 		// Obtengo el registro con el que se trabajará por medio del indice obtenido ($indice)
 		$register = CustomerModel::where('id',$indice)->first();
 		$valorprueba = "";
