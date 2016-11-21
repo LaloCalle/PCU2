@@ -1,6 +1,7 @@
 @extends('layouts.principal')
 
 @section('content')
+	@include('modals.document')
 	<div class="row">
 		<div class="col-md-12 text-center">
 	    	<h2 class="title">¡{{ trans('strings.welcome') }}!</h2>
@@ -97,7 +98,7 @@
 					        		<td class="text-center" style="min-width: 250px;">
 					        			{!!link_to_route('master-record.show', $title = trans('strings.view'), $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
 					        			@if(Auth::user()->p_document == 1)
-					        				{!! link_to('/', $title = trans('strings.documentbutton'), $parameters = ['class'=>'btn btn-primary'], $attributes = []) !!}
+					        				<button OnClick='Documentar({!! $master->id_unique_customer !!});' class='btn btn-primary' data-toggle='modal' data-target='#documentModal'>{{ trans('strings.documentbutton') }}</button>
 					        			@endif
 					        		</td>
 					        	</tr>
