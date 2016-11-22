@@ -35,6 +35,7 @@ function Documentar(){
         	}
         	*/
         	$.ajax({
+                async: false,
 		        url: route,
 		        headers: {'X-CSRF-TOKEN': token},
 		        type: 'POST',

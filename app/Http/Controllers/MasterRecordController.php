@@ -136,7 +136,8 @@ class MasterRecordController extends Controller
                 ]);
 
             return response()->json([
-                "mensaje" => "Customer Created"
+                "mensaje" => "Customer Created",
+                "id_unique" => $request->id_unique_customer,
             ]);
         }
     }

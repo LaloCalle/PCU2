@@ -37,9 +37,9 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('postal-code-state/{code}','DynamicListsController@state');
 
 	// Ejecución de extract y match
-	Route::get('/match', function () {
+	Route::get('/match', ['middleware' => 'auth', function () {
 	    return view('match/extract-match');
-	});
+	}]);
 	Route::get('extract-process','ExtractMatchController@import');
 	Route::post('match-process','ExtractMatchController@match');
 

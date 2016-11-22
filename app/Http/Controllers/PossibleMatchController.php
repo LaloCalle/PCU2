@@ -139,7 +139,8 @@ class PossibleMatchController extends Controller
                 ]);
 
             return response()->json([
-                "mensaje" => "Link"
+                "mensaje" => "Link",
+                "id_unique" => $request->id_unique_customer,
             ]);
         }
     }

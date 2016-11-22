@@ -168,7 +168,21 @@ $(function() {
                     $('#errors-json ul').append(atributos);
                     $('#errors-json').fadeIn();
                 }else{
-                    document.location.href=direction+'/'+url+'/'+id_branch+'/edit/';
+                    // Aquí voy a hacer el alta en champ con el nuevo id
+                    var status = "QUAL";
+                    var routechamp = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR="+ id_unique_customer +"&ACCNAME="+ social_reason +" - "+ branch_description +"&ADDRESS1="+ street +" "+ no_ext +" "+ no_int +" "+ colony +"&ADDRESS2=&CITY="+ city +"&STATE="+ state +"&CNTRY="+ country +"&PCODE="+ postal_code +"&TELONE="+ phone +"&MOBILE="+ mobile +"&FAX="+ other +"&EMAL="+ email +"&vatnbr="+ rfc +"&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt="+ status +"&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
+                    $.ajax({
+                        async: false,
+                        url: routechamp,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(e){
+                            document.location.href=direction+'/'+url+'/'+id_branch+'/edit/';
+                        },
+                        error: function(e){
+                            console.log(e);
+                        },
+                    });
                 }
             },
             error: function(e){
