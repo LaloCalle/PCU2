@@ -102,6 +102,8 @@ return [
 
     'view' => 'Ver',
     'documentbutton' => 'Documentar',
+    'preguide' => 'Preguía',
+    'preguidenote' => 'Si el cliente ya cuenta con una Preguía ingresala.',
 
     /*
     |--------------------------------------------------------------------------

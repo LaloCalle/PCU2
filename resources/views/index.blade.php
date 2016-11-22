@@ -98,7 +98,7 @@
 					        		<td class="text-center" style="min-width: 250px;">
 					        			{!!link_to_route('master-record.show', $title = trans('strings.view'), $parameters = $master->id, $attributes = ['class' => 'btn btn-primary'])!!}
 					        			@if(Auth::user()->p_document == 1)
-					        				<button OnClick='Documentar({!! $master->id_unique_customer !!});' class='btn btn-primary' data-toggle='modal' data-target='#documentModal'>{{ trans('strings.documentbutton') }}</button>
+					        				<button OnClick='DocumentarOpen("{!! $master->social_reason !!}","{!! $master->rfc !!}","{!! $master->branch_description !!}","{!! $master->id_unique_customer !!}");' class='btn btn-primary' data-toggle='modal' data-target='#documentModal'>{{ trans('strings.documentbutton') }}</button>
 					        			@endif
 					        		</td>
 					        	</tr>
@@ -111,4 +111,5 @@
 @endsection
 @section('scripts')
 	{!!Html::script('js/customer-search.js')!!}
+	{!!Html::script('js/document.js')!!}
 @endsection

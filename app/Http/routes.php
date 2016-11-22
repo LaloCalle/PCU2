@@ -27,6 +27,9 @@ Route::group(['middleware' => ['web']], function () {
 	// Index
 	Route::resource('/','IndexController');
 	Route::resource('/customer-search','CustomerSearchController');
+	// Document
+	Route::post('/document/getpreguide','DocumentController@getpreguide');
+	Route::post('/document/setpreguide','DocumentController@setpreguide');
 
 	// Listas dinámicas
 	Route::get('cities/{code}','DynamicListsController@cities');
