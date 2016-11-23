@@ -21,6 +21,8 @@ use Illuminate\Routing\Route;
 
 class PossibleMatchController extends Controller
 {
+    private $quote=false, $quoteMsg, $quoteNum;
+
     public function __construct(){
         $this->middleware('auth');
         $this->middleware('admin');
@@ -279,61 +281,91 @@ class PossibleMatchController extends Controller
                 "alerta" => trans('strings.matchmasterrecord'),
             ]);
         }else{
-            DB::table('master_tb')->where('id',$request->id_master)->update(['social_reason'=>$request->social_reason,'rfc'=>$request->rfc]);
-
-            // Aquí debe ir una función para crear el id de cliente único.
-            /*
-             * El id se forma de 13 caracteres:
-             * 5 letras del nombre del cliente.
-             * 2 letras del código del país.
-             * 3 letras del código de ciudad.
-             * 3 letras del código de sucursal.
-            */
-
             if(strlen($request->id_unique_customer) != 13){
                 $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
             }
 
-            DB::table('branch_tb')->where('id',$request->id_branch)->update(['id_unique_customer'=>$request->id_unique_customer,'branch_description'=>$request->branch_description,'country'=>$request->country,'city'=>$request->city,'postal_code'=>$request->postal_code,'colony'=>$request->colony,'state'=>$request->state,'street'=>$request->street,'no_ext'=>$request->no_ext,'no_int'=>$request->no_int]);
+            $URL = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR=". $request->id_unique_customer ."&ACCNAME=". $request->social_reason ." - ". $request->branch_description ."&ADDRESS1=". $request->street .", ". $request->no_ext .", ". $request->no_int .", ". $request->colony ."&ADDRESS2=&CITY=". $request->city ."&STATE=". $request->state ."&CNTRY=". $request->country ."&PCODE=". $request->postal_code ."&TELONE=". $request->phone ."&MOBILE=". $request->mobile ."&FAX=". $request->other ."&EMAL=". $request->email ."&vatnbr=". $request->rfc ."&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt=". env('CHAMP_STATUS') ."&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_URL, $URL);
+            $data = curl_exec($ch);
+            curl_close($ch);
 
-            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->count();
-            if($count == 1){
-                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->update(['description'=>$request->email]);
+            if($data==false){
+                $this->quoteMsg = "Error1"; // Web Service no disponible.
             }else{
-                DB::table('contact_tb')->insert(
-                        ['id_branch' => $request->id_branch, 'type' => 'email', 'description' => $request->email, 'name_contact' => '']
-                    );
-            }
-            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->count();
-            if($count == 1){
-                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->update(['description'=>$request->phone]);
-            }else{
-                DB::table('contact_tb')->insert(
-                        ['id_branch' => $request->id_branch, 'type' => 'phone', 'description' => $request->phone, 'name_contact' => '']
-                    );
-            }
-            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->count();
-            if($count == 1){
-                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->update(['description'=>$request->mobile]);
-            }else{
-                DB::table('contact_tb')->insert(
-                        ['id_branch' => $request->id_branch, 'type' => 'mobile', 'description' => $request->mobile, 'name_contact' => '']
-                    );
-            }
-            $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->count();
-            if($count == 1){
-                DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->update(['description'=>$request->other]);
-            }else{
-                DB::table('contact_tb')->insert(
-                        ['id_branch' => $request->id_branch, 'type' => 'other', 'description' => $request->other, 'name_contact' => '']
-                    );
-            }
+                $lineDatos = $data;
+                if (strlen($lineDatos) > 0 && strstr($lineDatos, "ERR") == false){
+                    $quote = strstr($lineDatos,"OK! Successful");
+                    $quote = substr($quote, 40, 13);
 
-            Session::flash('message-success',trans('strings.editregisteralert'));
+                    $this->quote=true;
+                    $this->quoteMsg="Exito";
+                    $this->quoteNum=$quote;
+                    
+                }else{
+                    $this->quote=false;
+                    $this->quoteMsg="Error2";
+                    $this->quoteNum="";
+                }
+            }
+            
+            if($this->quoteMsg == "Exito"){
+                DB::table('master_tb')->where('id',$request->id_master)->update(['social_reason'=>$request->social_reason,'rfc'=>$request->rfc]);
 
-            return response()->json([
-                "mensaje" => "Complete"
-            ]);
+                DB::table('branch_tb')->where('id',$request->id_branch)->update(['id_unique_customer'=>$request->id_unique_customer,'branch_description'=>$request->branch_description,'country'=>$request->country,'city'=>$request->city,'postal_code'=>$request->postal_code,'colony'=>$request->colony,'state'=>$request->state,'street'=>$request->street,'no_ext'=>$request->no_ext,'no_int'=>$request->no_int]);
+
+                $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->count();
+                if($count == 1){
+                    DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','email')->update(['description'=>$request->email]);
+                }else{
+                    DB::table('contact_tb')->insert(
+                            ['id_branch' => $request->id_branch, 'type' => 'email', 'description' => $request->email, 'name_contact' => '']
+                        );
+                }
+                $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->count();
+                if($count == 1){
+                    DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','phone')->update(['description'=>$request->phone]);
+                }else{
+                    DB::table('contact_tb')->insert(
+                            ['id_branch' => $request->id_branch, 'type' => 'phone', 'description' => $request->phone, 'name_contact' => '']
+                        );
+                }
+                $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->count();
+                if($count == 1){
+                    DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','mobile')->update(['description'=>$request->mobile]);
+                }else{
+                    DB::table('contact_tb')->insert(
+                            ['id_branch' => $request->id_branch, 'type' => 'mobile', 'description' => $request->mobile, 'name_contact' => '']
+                        );
+                }
+                $count = DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->count();
+                if($count == 1){
+                    DB::table('contact_tb')->where('id_branch',$request->id_branch)->where('type','other')->update(['description'=>$request->other]);
+                }else{
+                    DB::table('contact_tb')->insert(
+                            ['id_branch' => $request->id_branch, 'type' => 'other', 'description' => $request->other, 'name_contact' => '']
+                        );
+                }
+
+                Session::flash('message-success',trans('strings.editregisteralert'));
+
+                return response()->json([
+                    "mensaje" => "Complete",
+                    "id_unique" => $request->id_unique_customer,
+                    "mensajechamp" => $this->quoteMsg,
+                    "numerochamp" => $this->quoteNum,
+                ]);
+            }else{
+                return response()->json([
+                    "mensaje" => "Error",
+                    "id_unique" => "",
+                    "mensajechamp" => $this->quoteMsg,
+                    "numerochamp" => $this->quoteNum,
+                ]);
+            }
         }
     }
 

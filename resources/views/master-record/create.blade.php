@@ -8,6 +8,7 @@
 	    	<button class="btn btn-secondary" id="master-create">{{ trans('strings.add') }}</button>
 	    </div>
 	</div>
+	<div id="response"></div>
 @endsection
 @section('scripts')
 	{!!Html::script('js/master-record-create.js')!!}

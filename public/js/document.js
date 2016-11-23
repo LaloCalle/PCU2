@@ -17,40 +17,83 @@ function Documentar(){
 
 	if(preguide == "" || preguide == null){
 		var route = direction+"/document/getpreguide";
-		var routepreguide = "http://webservices.champ.aero/CHAMPTT_WS/indexGET.php?inpRTCL=&inpORIG=&inpDEST=&inpTPCS=1&inpAWGT=1&inpDESC=&inpSHC1=&inpSHC2=&inpSHC3=&inpSHC4=&inpSHC5=&inpSHC6=&inpSHC7=&inpSHC8=&inpSHC9=&inpAGNM="+ id +"&inpAGAN=&inpCOMM=&inpDECV=&inpREMK=&inpSHNM=&inpSHAD=&inpSHCO=&inpSHST=&inpSHTL=&inpSHCI=&inpSHCN=&inpSHZP=&inpSHEM=&inpSHRF=&inpCNNM=&inpCNAD=&inpCNCO=&inpCNST=&inpCNTL=&inpCNCI=&inpCNCN=&inpCNZP=&inpQOTN=&inpCHCD=&inpUNWT=&inpCHGW=0&inpCURR=&inpMCC1=&inpMCA1=&inpMCC2=&inpMCA2=&inpMCC3=&inpMCA3=&inpMCC4=&inpMCA4=&inpMCC5=&inpMCA5=&frmSubm=submit";
 	}else{
 		var route = direction+"/document/setpreguide";
-		var routepreguide = "http://webservices.champ.aero/CHAMPTT_WS/indexGET.php?inpRTCL=&inpORIG=&inpDEST=&inpTPCS=&inpAWGT=&inpDESC=&inpSHC1=&inpSHC2=&inpSHC3=&inpSHC4=&inpSHC5=&inpSHC6=&inpSHC7=&inpSHC8=&inpSHC9=&inpAGNM="+ id +"&inpAGAN=&inpCOMM=&inpDECV=&inpREMK=&inpSHNM=&inpSHAD=&inpSHCO=&inpSHST=&inpSHTL=&inpSHCI=&inpSHCN=&inpSHZP=&inpSHEM=&inpSHRF=&inpCNNM=&inpCNAD=&inpCNCO=&inpCNST=&inpCNTL=&inpCNCI=&inpCNCN=&inpCNZP=&inpQOTN="+ preguide +"&inpCHCD=&inpUNWT=&inpCHGW=0&inpCURR=&inpMCC1=&inpMCA1=&inpMCC2=&inpMCA2=&inpMCC3=&inpMCA3=&inpMCC4=&inpMCA4=&inpMCC5=&inpMCA5=&frmSubm=submit";
 	}
 
     $.ajax({
-        url: routepreguide,
-        type: 'GET',
+        url: route,
+        headers: {'X-CSRF-TOKEN': token},
+        type: 'POST',
         dataType: 'json',
+        data: {
+            id: id,
+        },
         success: function(e){
-        	console.log(e);
-        	/*
-        	if(preguide == "" || preguide == null){
-        		preguide = e["preguide"];
-        	}
-        	*/
-        	$.ajax({
-                async: false,
-		        url: route,
-		        headers: {'X-CSRF-TOKEN': token},
-		        type: 'POST',
-		        dataType: 'json',
-		        data: {
-		            id: id,
-		            preguide: preguide,
-		        },
-		        success: function(e){
-		        	// Mensaje de pregúia creada y asignada al cliente.
-		        },
-		        error: function(e){
-		        	console.log(e);
-		        },
-		    });
+            if(e["mensaje"] == "SETG"){
+                $('#documentModal').modal('toggle');
+                if(e['mensajechamp'] == "Error1"){
+                    estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>Web Service no disponible.</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-modal').children().remove();
+                    $('#errors-modal').append(estructura);
+                    $('#errors-modal ul').children('li').remove();
+                    $('#errors-modal ul').append(atributos);
+                    $('#errors-modal').fadeIn();
+                }else if(e['mensajechamp'] == "Error2"){
+                    estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>Usuario existente en Champ.</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-modal').children().remove();
+                    $('#errors-modal').append(estructura);
+                    $('#errors-modal ul').children('li').remove();
+                    $('#errors-modal ul').append(atributos);
+                    $('#errors-modal').fadeIn();
+                }else{
+                    //document.location.href=direction+'/'+url+'/'+id_branch+'/edit/';
+                    alert("algo");
+                }
+            }else{
+                if(e['mensajechamp'] == "Error1"){
+                    estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>Web Service no disponible.</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-modal').children().remove();
+                    $('#errors-modal').append(estructura);
+                    $('#errors-modal ul').children('li').remove();
+                    $('#errors-modal ul').append(atributos);
+                    $('#errors-modal').fadeIn();
+                }else if(e['mensajechamp'] == "Error2"){
+                    estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>Usuario existente en Champ.</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-modal').children().remove();
+                    $('#errors-modal').append(estructura);
+                    $('#errors-modal ul').children('li').remove();
+                    $('#errors-modal ul').append(atributos);
+                    $('#errors-modal').fadeIn();
+                }else{
+                    estructura = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>Se asigno la preguía "+ e["numerochamp"] +" al cliente con ID "+ id +".</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-modal').children().remove();
+                    $('#errors-modal').append(estructura);
+                    $('#errors-modal ul').children('li').remove();
+                    $('#errors-modal ul').append(atributos);
+                    $('#errors-modal').fadeIn();
+                }
+            }
         },
         error: function(e){
         	console.log(e);

@@ -7,6 +7,7 @@
         <h4 class="modal-title">{{ trans('strings.documentbutton') }}</h4>
       </div>
       <div class="modal-body">
+        @include('alerts.modal')
         <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
         <input type="hidden" id="id">
         <div class="form-group">

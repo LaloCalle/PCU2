@@ -30,8 +30,9 @@
     @yield('styles')
     
     <script>
-        var direction;
+        var direction, statusChamp;
         direction = '<?php echo env('APP_ROUTE_VM'); ?>';
+        statusChamp = '<?php echo env('CHAMP_STATUS'); ?>';
     </script>
   </head>
   <body>

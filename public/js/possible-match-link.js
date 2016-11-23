@@ -120,21 +120,31 @@ $(function() {
                     $('#errors-json ul').append(atributos);
                     $('#errors-json').fadeIn();
                 }else{
-                    // Aquí voy a hacer el alta en champ con el nuevo id
-                    var status = "QUAL";
-                    var routechamp = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR="+ e['id_unique'] +"&ACCNAME="+ social_reason +" - "+ branch_description +"&ADDRESS1="+ street +" "+ no_ext +" "+ no_int +" "+ colony +"&ADDRESS2=&CITY="+ city +"&STATE="+ state +"&CNTRY="+ country +"&PCODE="+ postal_code +"&TELONE="+ phone +"&MOBILE="+ mobile +"&FAX="+ other +"&EMAL="+ email +"&vatnbr="+ rfc +"&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt="+ status +"&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
-                    $.ajax({
-                        async: false,
-                        url: routechamp,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(e){
-                            document.location.href=direction+'/possible-match/'+id_master+'/link/';
-                        },
-                        error: function(e){
-                            console.log(e);
-                        },
-                    });
+                    if(e['mensajechamp'] == "Error1"){
+                        estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                        var atributos = "<li>Web Service no disponible.</li>";
+
+                        $('body,html').animate({scrollTop : 0}, 0);
+                        $('#errors-json').children().remove();
+                        $('#errors-json').append(estructura);
+                        $('#errors-json ul').children('li').remove();
+                        $('#errors-json ul').append(atributos);
+                        $('#errors-json').fadeIn();
+                    }else if(e['mensajechamp'] == "Error2"){
+                        estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                        var atributos = "<li>Usuario existente en Champ.</li>";
+
+                        $('body,html').animate({scrollTop : 0}, 0);
+                        $('#errors-json').children().remove();
+                        $('#errors-json').append(estructura);
+                        $('#errors-json ul').children('li').remove();
+                        $('#errors-json ul').append(atributos);
+                        $('#errors-json').fadeIn();
+                    }else{
+                        document.location.href=direction+'/possible-match/'+id_master+'/link/';
+                    }
                 }
             },
             error: function(e){
