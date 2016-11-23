@@ -55,8 +55,16 @@ function Documentar(){
                     $('#errors-modal ul').append(atributos);
                     $('#errors-modal').fadeIn();
                 }else{
-                    //document.location.href=direction+'/'+url+'/'+id_branch+'/edit/';
-                    alert("algo");
+                    estructura = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                    var atributos = "<li>Se asigno la preguía "+ e["numerochamp"] +" al cliente con ID "+ id +".</li>";
+
+                    $('body,html').animate({scrollTop : 0}, 0);
+                    $('#errors-modal').children().remove();
+                    $('#errors-modal').append(estructura);
+                    $('#errors-modal ul').children('li').remove();
+                    $('#errors-modal ul').append(atributos);
+                    $('#errors-modal').fadeIn();
                 }
             }else{
                 if(e['mensajechamp'] == "Error1"){
