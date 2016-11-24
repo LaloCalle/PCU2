@@ -96,7 +96,7 @@ class MasterRecordController extends Controller
         }else{
             $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
 
-            $URL = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR=". $request->id_unique_customer ."&ACCNAME=". $request->social_reason ." - ". $request->branch_description ."&ADDRESS1=". $request->street .", ". $request->no_ext .", ". $request->no_int .", ". $request->colony ."&ADDRESS2=&CITY=". $request->city ."&STATE=". $request->state ."&CNTRY=". $request->country ."&PCODE=". $request->postal_code ."&TELONE=". $request->phone ."&MOBILE=". $request->mobile ."&FAX=". $request->other ."&EMAL=". $request->email ."&vatnbr=". $request->rfc ."&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt=". env('CHAMP_STATUS') ."&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
+            $URL = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR=". urlencode($request->id_unique_customer) ."&ACCNAME=". urlencode($request->social_reason ." - ". $request->branch_description) ."&ADDRESS1=". urlencode($request->street .", ". $request->no_ext .", ". $request->no_int .", ". $request->colony) ."&ADDRESS2=&CITY=". urlencode($request->city) ."&STATE=". urlencode($request->state) ."&CNTRY=". urlencode($request->country) ."&PCODE=". urlencode($request->postal_code) ."&TELONE=". urlencode($request->phone) ."&MOBILE=". urlencode($request->mobile) ."&FAX=". urlencode($request->other) ."&EMAL=". urlencode($request->email) ."&vatnbr=". urlencode($request->rfc) ."&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt=". urlencode(env('CHAMP_STATUS')) ."&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -164,6 +164,8 @@ class MasterRecordController extends Controller
                         'type' => 'other',
                         'description' => $request->other,
                     ]);
+
+                Session::flash('message-success',trans('strings.adduseralert'));
 
                 return response()->json([
                     "mensaje" => "Customer Created",
@@ -302,7 +304,7 @@ class MasterRecordController extends Controller
                 $request->id_unique_customer = $this->getIdUnique($request->social_reason, $request->country, $request->city, $request->branch_description);
             }
 
-            $URL = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR=". $request->id_unique_customer ."&ACCNAME=". $request->social_reason ." - ". $request->branch_description ."&ADDRESS1=". $request->street .", ". $request->no_ext .", ". $request->no_int .", ". $request->colony ."&ADDRESS2=&CITY=". $request->city ."&STATE=". $request->state ."&CNTRY=". $request->country ."&PCODE=". $request->postal_code ."&TELONE=". $request->phone ."&MOBILE=". $request->mobile ."&FAX=". $request->other ."&EMAL=". $request->email ."&vatnbr=". $request->rfc ."&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt=". env('CHAMP_STATUS') ."&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
+            $URL = "http://webservices.champ.aero/CHAMPTT_WS/websvc2.php?ACCTNBR=". urlencode($request->id_unique_customer) ."&ACCNAME=". urlencode($request->social_reason ." - ". $request->branch_description) ."&ADDRESS1=". urlencode($request->street .", ". $request->no_ext .", ". $request->no_int .", ". $request->colony) ."&ADDRESS2=&CITY=". urlencode($request->city) ."&STATE=". urlencode($request->state) ."&CNTRY=". urlencode($request->country) ."&PCODE=". urlencode($request->postal_code) ."&TELONE=". urlencode($request->phone) ."&MOBILE=". urlencode($request->mobile) ."&FAX=". urlencode($request->other) ."&EMAL=". urlencode($request->email) ."&vatnbr=". urlencode($request->rfc) ."&SNAME=&ACCTA=&ACCTB=&ACCTC=&ECONTACT=&ICONTACT=&DOCDISP=&BROKER=&BillAcct=&EFFDATE=&M_Txt=". urlencode(env('CHAMP_STATUS')) ."&frmSubm=Submit&scrnsel=2&actype=N&HSNM1=&HSNM2=&HSNM3=&HSNM4=";
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_HEADER, 0);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
