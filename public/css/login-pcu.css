@@ -1,0 +1,58 @@
+html,
+body {
+    height: 100%;
+    background-image: url('/~clienteunico/images/background-login.jpg');
+    background-size: cover;
+    background-position: 50% 50%;
+}
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: table;
+}
+.container {
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+}
+.container .alert{
+    text-align: left;
+}
+.content {
+    text-align: center;
+    display: inline-block;
+    min-width: 30%;
+}
+form{
+    margin-top: 25px;
+}
+form button.btn{
+    border-radius: 35px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: transparent;
+    color: #fff;
+}
+.recovery-pass{
+    padding-top: 25px;
+}
+form .form-control{
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0px;
+    color: #fff;
+}
+form .input-group-addon{
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0px;
+    color: #fff;
+}
+a{
+    color: #fff;
+}

@@ -2,6 +2,8 @@
 
 namespace Illuminate\Database;
 
+ini_set("memory_limit",-1);
+
 use PDO;
 use Closure;
 use Exception;
