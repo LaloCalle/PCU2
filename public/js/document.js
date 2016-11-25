@@ -28,10 +28,10 @@ function Documentar(){
         dataType: 'json',
         data: {
             id: id,
+            preguide: preguide,
         },
         success: function(e){
             if(e["mensaje"] == "SETG"){
-                $('#documentModal').modal('toggle');
                 if(e['mensajechamp'] == "Error1"){
                     estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 

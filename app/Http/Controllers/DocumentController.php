@@ -6,17 +6,37 @@ use Illuminate\Http\Request;
 
 use PCU\Http\Requests;
 use PCU\Http\Controllers\Controller;
+use PCU\MasterModel;
+use PCU\BranchModel;
+use PCU\ContactModel;
 
 class DocumentController extends Controller
 {
     private $quote=false, $quoteMsg, $quoteNum;
 
     public function getpreguide(Request $request){
-        $URL = "http://webservices.champ.aero/CHAMPTT_WS/indexGET.php?
-            inpRTCL=
-            &inpORIG=
-            &inpDEST=
-            &inpTPCS=1&inpAWGT=1&inpDESC=&inpSHC1=&inpSHC2=&inpSHC3=&inpSHC4=&inpSHC5=&inpSHC6=&inpSHC7=&inpSHC8=&inpSHC9=&inpAGNM=". $request->id ."&inpAGAN=&inpCOMM=&inpDECV=&inpREMK=&inpSHNM=&inpSHAD=&inpSHCO=&inpSHST=&inpSHTL=&inpSHCI=&inpSHCN=&inpSHZP=&inpSHEM=&inpSHRF=&inpCNNM=&inpCNAD=&inpCNCO=&inpCNST=&inpCNTL=&inpCNCI=&inpCNCN=&inpCNZP=&inpQOTN=&inpCHCD=&inpUNWT=&inpCHGW=0&inpCURR=&inpMCC1=&inpMCA1=&inpMCC2=&inpMCA2=&inpMCC3=&inpMCA3=&inpMCC4=&inpMCA4=&inpMCC5=&inpMCA5=&frmSubm=submit";
+        $branch = BranchModel::where('id_unique_customer',$request->id)->first();
+        $contacts = ContactModel::where('id_branch',$branch->id)->get();
+        $master = MasterModel::where('id',$branch->id_master)->first();
+
+        $contact->email = "";
+        $contact->phone = "";
+        $contact->mobile = "";
+        $contact->other = "";
+        
+        foreach($contacts as $contactproc){
+            if($contactproc->type == "email"){
+                $contact->email = $contactproc->description;
+            }else if($contactproc->type == "phone"){
+                $contact->phone = $contactproc->description;
+            }else if($contactproc->type == "mobile"){
+                $contact->mobile = $contactproc->description;
+            }else if($contactproc->type == "other"){
+                $contact->other = $contactproc->description;
+            }
+        }
+
+        $URL = "http://webservices.champ.aero/CHAMPTT_WS/indexGET.php?inpORIG=MEX&inpDEST=GDL&inpSHC1=&inpSHC2=&inpSHC3=&inpSHC4=&inpSHC5=&inpSHC6=&inpSHC7=&inpSHC8=&inpSHC9=&inpDECV=&inpSHNM=". urlencode($master->social_reason ." - ". $branch->branch_description) ."&inpSHNE=". urlencode($branch->no_ext) ."&inpSHNI=". urlencode($branch->no_int) ."&inpSHAD=". urlencode($branch->street) ."&inpSHCI=". urlencode($branch->city) ."&inpSHCO=". urlencode($branch->colony) ."&inpSHST=". urlencode($branch->state) ."&inpSHZP=". urlencode($branch->postal_code) ."&inpSHCN=". urlencode($branch->country) ."&inpSHRF=". urlencode($master->rfc) ."&inpSHTL=". urlencode($contact->phone) ."&inpSHEM=". urlencode($contact->email) ."&inpCNNM=&inpCNNE=&inpCNNI=&inpCNAD=&inpCNCI=&inpCNCO=&inpCNST=&inpCNZP=&inpCNCN=&inpCNTL=&inpAGNM=&inpAGAN=&inpREMK=&inpTPCS=1&inpAWGT=1&inpRTCL=&inpCOMM=&inpDESC=&inpCHCD=&inpCURR=&inpUNWT=&inpQOTN=&inpCHGW=1&inpMCC1=&inpMCA1=&inpMCC2=&inpMCA2=&inpMCC3=&inpMCA3=&inpMCC4=&inpMCA4=&inpMCC5=&inpMCA5=". urlencode(env('CHAMP_DOC')) ."&inpSHACCNBR=". urlencode($request->id) ."&frmSubm=submit";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -52,7 +72,7 @@ class DocumentController extends Controller
     }
 
     public function setpreguide(Request $request){
-        $URL = "http://webservices.champ.aero/CHAMPTT_WS/indexGET.php?inpRTCL=&inpORIG=&inpDEST=&inpTPCS=&inpAWGT=&inpDESC=&inpSHC1=&inpSHC2=&inpSHC3=&inpSHC4=&inpSHC5=&inpSHC6=&inpSHC7=&inpSHC8=&inpSHC9=&inpAGNM=". $request->id ."&inpAGAN=&inpCOMM=&inpDECV=&inpREMK=&inpSHNM=&inpSHAD=&inpSHCO=&inpSHST=&inpSHTL=&inpSHCI=&inpSHCN=&inpSHZP=&inpSHEM=&inpSHRF=&inpCNNM=&inpCNAD=&inpCNCO=&inpCNST=&inpCNTL=&inpCNCI=&inpCNCN=&inpCNZP=&inpQOTN=". $request->preguide ."&inpCHCD=&inpUNWT=&inpCHGW=0&inpCURR=&inpMCC1=&inpMCA1=&inpMCC2=&inpMCA2=&inpMCC3=&inpMCA3=&inpMCC4=&inpMCA4=&inpMCC5=&inpMCA5=&frmSubm=submit";
+        $URL = "http://webservices.champ.aero/CHAMPTT_WS/indexGET.php?inpORIG=MEX&inpDEST=GDL&inpSHC1=&inpSHC2=&inpSHC3=&inpSHC4=&inpSHC5=&inpSHC6=&inpSHC7=&inpSHC8=&inpSHC9=&inpDECV=&inpSHNM=". urlencode($master->social_reason ." - ". $branch->branch_description) ."&inpSHNE=". urlencode($branch->no_ext) ."&inpSHNI=". urlencode($branch->no_int) ."&inpSHAD=". urlencode($branch->street) ."&inpSHCI=". urlencode($branch->city) ."&inpSHCO=". urlencode($branch->colony) ."&inpSHST=". urlencode($branch->state) ."&inpSHZP=". urlencode($branch->postal_code) ."&inpSHCN=". urlencode($branch->country) ."&inpSHRF=". urlencode($master->rfc) ."&inpSHTL=". urlencode($contact->phone) ."&inpSHEM=". urlencode($contact->email) ."&inpCNNM=&inpCNNE=&inpCNNI=&inpCNAD=&inpCNCI=&inpCNCO=&inpCNST=&inpCNZP=&inpCNCN=&inpCNTL=&inpAGNM=&inpAGAN=&inpREMK=&inpTPCS=1&inpAWGT=1&inpRTCL=&inpCOMM=&inpDESC=&inpCHCD=&inpCURR=&inpUNWT=&inpQOTN=". urlencode($request->preguide) ."&inpCHGW=1&inpMCC1=&inpMCA1=&inpMCC2=&inpMCA2=&inpMCC3=&inpMCA3=&inpMCC4=&inpMCA4=&inpMCC5=&inpMCA5=". urlencode(env('CHAMP_DOC')) ."&inpSHACCNBR=". urlencode($request->id) ."&frmSubm=submit";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

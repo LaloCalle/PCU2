@@ -1,9 +1,14 @@
+$(document).ready(function() {
+    // Código para poner en movimiento el progressbar
+    $( "#progressbar" ).progressbar({
+        value: false
+    });
+});
 $(function() {
     // Función para tener ciudades dependiendo del país seleccionado
     $( "#create-country" ).change(function(event){
         $.get(direction+"/cities/"+event.target.value+"",function(response, state){
-            $( "#create-city" ).empty();
-            $( "#create-city" ).append("<option>Ciudad</option>");
+            $( "#create-city" ).find("option:gt(0)").remove();
             for(i=0; i<response.length; i++){
                 $( "#create-city" ).append("<option value='"+ response[i].code +"'>"+ response[i].name +"</option>");
             }
@@ -27,8 +32,7 @@ $(function() {
         var code = $( "#create-postal_code_mx" ).val();
 
         $.get(direction+"/postal-code-colonies/"+code+"",function(response, postalcodes){
-            $( "#create-colony_mx" ).empty();
-            $( "#create-colony_mx" ).append("<option>Colonia</option>");
+            $( "#create-colony_mx" ).find("option:gt(0)").remove();
 
             for(i=0; i<response.length; i++){
                 colonias = response[i].colony.split(';');
@@ -110,6 +114,7 @@ $(function() {
                 other: other,
             },
             success: function(e){
+                $('#progressbarModal').modal('toggle');
                 if(e['mensaje'] == "Match"){
                     estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 
@@ -125,7 +130,7 @@ $(function() {
                     if(e['mensajechamp'] == "Error1"){
                         estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 
-                        var atributos = "<li>Web Service no disponible.</li>";
+                        var atributos = "<li>"+ e['alerta'] +"</li>";
 
                         $('body,html').animate({scrollTop : 0}, 0);
                         $('#errors-json').children().remove();
@@ -136,7 +141,7 @@ $(function() {
                     }else if(e['mensajechamp'] == "Error2"){
                         estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 
-                        var atributos = "<li>Usuario existente en Champ.</li>";
+                        var atributos = "<li>"+ e['alerta'] +"</li>";
 
                         $('body,html').animate({scrollTop : 0}, 0);
                         $('#errors-json').children().remove();
@@ -145,12 +150,44 @@ $(function() {
                         $('#errors-json ul').append(atributos);
                         $('#errors-json').fadeIn();
                     }else{
-                        document.location.href=direction+'/';
+                        // Limpiado de campos
+                        $( "#create-social_reason" ).val("");
+                        $( "#create-rfc" ).val("");
+                        $( "#create-branch_description" ).val("");
+                        $( "#create-country" ).val("");
+                        $( "#create-city" ).val("");
+                        $( "#create-postal_code" ).val("");
+                        $( "#create-colony" ).val("");
+                        $( "#create-state" ).val("");
+                        $( "#create-postal_code_mx" ).val("");
+                        $( "#create-colony_mx" ).val("");
+                        $( "#create-state_mx" ).val("");
+                        $( "#create-street" ).val("");
+                        $( "#create-no_ext" ).val("");
+                        $( "#create-no_int" ).val("");
+                        $( "#create-email" ).val("");
+                        $( "#create-phone" ).val("");
+                        $( "#create-mobile" ).val("");
+                        $( "#create-other" ).val("");
+
+                        $("#postal_codes_mx").css('display','none');
+                        $("#postal_codes_other").css('display','block');
+
+                        estructura = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                        var atributos = "<li>"+ e['alerta'] + e["id_unique"] +"</li>";
+
+                        $('body,html').animate({scrollTop : 0}, 0);
+                        $('#errors-json').children().remove();
+                        $('#errors-json').append(estructura);
+                        $('#errors-json ul').children('li').remove();
+                        $('#errors-json ul').append(atributos);
+                        $('#errors-json').fadeIn();
                     }
                 }
             },
             error: function(e){
-                console.log(e);
+                $('#progressbarModal').modal('toggle');
 
                 var cadena = e["responseText"];
                 var valores = JSON.parse(cadena);

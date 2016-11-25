@@ -238,4 +238,24 @@ return [
     'resetpasswordnote1' => 'If you want to reset your password, follow the link below',
     'resetpassword' => 'Reset Password',
     'resetpasswordnote2' => 'otherwise just ignore this link',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Add Customer Progressbar
+    |--------------------------------------------------------------------------
+    */
+
+    'matchverify' => 'Checking Matches',
+    'matchverifynote' => 'This process may take a few minutes, please do not close the window or browser.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Add Customer Alerts
+    |--------------------------------------------------------------------------
+    */
+
+    'notwebservice' => 'Web Service not available.',
+    'customerexistchamp' => 'Existing customer in Champ.',
+    'customeraddid' => 'Customer successfully added with ID ',
+    'customereditid' => 'Client edited correctly.',
 ];

@@ -13,7 +13,7 @@
     <!-- Switch -->
     {!!Html::style('css/highlight.css')!!}
     {!!Html::style('css/bootstrap3/bootstrap-switch.css')!!}
-    {!!Html::style('http://getbootstrap.com/assets/css/docs.min.css')!!}
+    {!!Html::style('https://getbootstrap.com/assets/css/docs.min.css')!!}
     {!!Html::style('css/main.css')!!}
 
     <!-- Menú -->
@@ -22,7 +22,7 @@
     {!!Html::style('css/font-awesome.min.css')!!}
     
     <!-- jQueryUI -->
-    {!!Html::style('http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css')!!}
+    {!!Html::style('https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css')!!}
 
     <!-- Custom -->
     {!!Html::style('css/custom.css')!!}
@@ -64,7 +64,7 @@
     {!!Html::script('js/sb-admin-2.js')!!}
 
     <!-- jQueryUI -->
-    {!!Html::script('http://code.jquery.com/ui/1.11.3/jquery-ui.js')!!}
+    {!!Html::script('https://code.jquery.com/ui/1.11.3/jquery-ui.js')!!}
 
     <!-- Switch -->
     {!!Html::script('js/highlight.js')!!}

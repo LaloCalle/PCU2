@@ -106,6 +106,7 @@ class MasterRecordController extends Controller
 
             if($data==false){
                 $this->quoteMsg = "Error1"; // Web Service no disponible.
+                $mensaje = trans('strings.notwebservice');
             }else{
                 $lineDatos = $data;
                 if (strlen($lineDatos) > 0 && strstr($lineDatos, "ERR") == false){
@@ -120,6 +121,7 @@ class MasterRecordController extends Controller
                     $this->quote=false;
                     $this->quoteMsg="Error2";
                     $this->quoteNum="";
+                    $mensaje = trans('strings.customerexistchamp');
                 }
             }
             
@@ -165,13 +167,12 @@ class MasterRecordController extends Controller
                         'description' => $request->other,
                     ]);
 
-                Session::flash('message-success',trans('strings.adduseralert'));
-
                 return response()->json([
                     "mensaje" => "Customer Created",
                     "id_unique" => $request->id_unique_customer,
                     "mensajechamp" => $this->quoteMsg,
                     "numerochamp" => $this->quoteNum,
+                    "alerta" => trans('strings.customeraddid'),
                 ]);
             }else{
                 return response()->json([
@@ -179,6 +180,7 @@ class MasterRecordController extends Controller
                     "id_unique" => "",
                     "mensajechamp" => $this->quoteMsg,
                     "numerochamp" => $this->quoteNum,
+                    "alerta" => $mensaje,
                 ]);
             }
         }
@@ -314,6 +316,7 @@ class MasterRecordController extends Controller
 
             if($data==false){
                 $this->quoteMsg = "Error1"; // Web Service no disponible.
+                $mensaje = trans('strings.notwebservice');
             }else{
                 $lineDatos = $data;
                 if (strlen($lineDatos) > 0 && strstr($lineDatos, "ERR") == false){
@@ -328,6 +331,7 @@ class MasterRecordController extends Controller
                     $this->quote=false;
                     $this->quoteMsg="Error2";
                     $this->quoteNum="";
+                    $mensaje = trans('strings.customerexistchamp');
                 }
             }
             
@@ -376,6 +380,7 @@ class MasterRecordController extends Controller
                     "id_unique" => $request->id_unique_customer,
                     "mensajechamp" => $this->quoteMsg,
                     "numerochamp" => $this->quoteNum,
+                    "alerta" => trans('strings.customereditid'),
                 ]);
             }else{
                 return response()->json([
@@ -383,6 +388,7 @@ class MasterRecordController extends Controller
                     "id_unique" => "",
                     "mensajechamp" => $this->quoteMsg,
                     "numerochamp" => $this->quoteNum,
+                    "alerta" => $mensaje,
                 ]);
             }
         }

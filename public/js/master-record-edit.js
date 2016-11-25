@@ -10,8 +10,7 @@ $(function() {
     // Función para tener ciudades dependiendo del país seleccionado
     $( "#edit-country" ).change(function(event){
         $.get(direction+"/cities/"+event.target.value+"",function(response, state){
-            $( "#edit-city" ).empty();
-            $( "#edit-city" ).append("<option>Ciudad</option>");
+            $( "#edit-city" ).find("option:gt(0)").remove();
             for(i=0; i<response.length; i++){
                 $( "#edit-city" ).append("<option value='"+ response[i].code +"'>"+ response[i].name +"</option>");
             }
@@ -26,8 +25,7 @@ $(function() {
 
         var code = $( "#edit-postal_code_mx" ).val();
         $.get(direction+"/postal-code-colonies/"+code+"",function(response, postalcodes){
-            $( "#edit-colony_mx" ).empty();
-            $( "#edit-colony_mx" ).append("<option>Colonia</option>");
+            $( "#edit-colony_mx" ).find("option:gt(0)").remove();
 
             for(i=0; i<response.length; i++){
                 colonias = response[i].colony.split(';');
@@ -65,8 +63,7 @@ $(function() {
         var code = $( "#edit-postal_code_mx" ).val();
 
         $.get(direction+"/postal-code-colonies/"+code+"",function(response, postalcodes){
-            $( "#edit-colony_mx" ).empty();
-            $( "#edit-colony_mx" ).append("<option>Colonia</option>");
+            $( "#edit-colony_mx" ).find("option:gt(0)").remove();
 
             for(i=0; i<response.length; i++){
                 colonias = response[i].colony.split(';');
@@ -171,7 +168,7 @@ $(function() {
                     if(e['mensajechamp'] == "Error1"){
                         estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 
-                        var atributos = "<li>Web Service no disponible.</li>";
+                        var atributos = "<li>"+ e['alerta'] +"</li>";
 
                         $('body,html').animate({scrollTop : 0}, 0);
                         $('#errors-json').children().remove();
@@ -182,7 +179,7 @@ $(function() {
                     }else if(e['mensajechamp'] == "Error2"){
                         estructura = "<div class='alert alert-danger alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
 
-                        var atributos = "<li>Usuario existente en Champ.</li>";
+                        var atributos = "<li>"+ e['alerta'] +"</li>";
 
                         $('body,html').animate({scrollTop : 0}, 0);
                         $('#errors-json').children().remove();
@@ -191,7 +188,16 @@ $(function() {
                         $('#errors-json ul').append(atributos);
                         $('#errors-json').fadeIn();
                     }else{
-                        document.location.href=direction+'/'+url+'/'+id_branch+'/edit/';
+                        estructura = "<div class='alert alert-success alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><ul></ul></div>";
+
+                        var atributos = "<li>"+ e['alerta'] +"</li>";
+
+                        $('body,html').animate({scrollTop : 0}, 0);
+                        $('#errors-json').children().remove();
+                        $('#errors-json').append(estructura);
+                        $('#errors-json ul').children('li').remove();
+                        $('#errors-json ul').append(atributos);
+                        $('#errors-json').fadeIn();
                     }
                 }
             },

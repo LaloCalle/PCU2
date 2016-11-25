@@ -240,4 +240,24 @@ return [
     'resetpassword' => 'Resetear Contraseña',
     'resetpasswordnote2' => 'de lo contrario ignora éste link',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Add Customer Progressbar
+    |--------------------------------------------------------------------------
+    */
+
+    'matchverify' => 'Verificando Coincidencias',
+    'matchverifynote' => 'Este proceso puede tardar unos minutos, por favor no cierre la ventana ni el navegador.',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Add Customer Alerts
+    |--------------------------------------------------------------------------
+    */
+
+    'notwebservice' => 'Web Service no disponible.',
+    'customerexistchamp' => 'Cliente existente en Champ.',
+    'customeraddid' => 'Cliente agregado correctamente con ID ',
+    'customereditid' => 'Cliente editado correctamente.',
+
 ];
