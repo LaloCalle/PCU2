@@ -44,7 +44,7 @@
                   <a href="{!!URL::to('/users/create')!!}"><i class='fa fa-plus fa-fw'></i> {{ trans('strings.adduser') }}</a>
                 </li>
                 <li>
-                  <a href="/users"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
+                  <a href="{!!URL::to('/users')!!}"><i class='fa fa-th-list fa-fw'></i> {{ trans('strings.listuser') }}</a>
                 </li>
               </ul>
             </li>
